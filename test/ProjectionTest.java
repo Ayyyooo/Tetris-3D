@@ -11,34 +11,10 @@ import engine.elements.*;
 import engine.*;
 import java.awt.Color;
 import java.util.ArrayList;
+import game.*;
 public class ProjectionTest {
     public static void main(String[] args) {
         Engine p = new Engine(800,600,30,0.1f,5000);
-//   Mesh mesh3d = new Mesh(new float[][][]{
-//    // SOUTH (Rectangle, longer in y-axis)
-//    {{ 0.0f, 0.0f, 0.0f, 0, 0}, { 0.0f, 2.0f, 0.0f , 0 ,1}, {1.0f, 2.0f, 0.0f , 1 , 1 }},
-//    {{ 0.0f, 0.0f, 0.0f, 0, 0}, {1.0f, 2.0f, 0.0f, 1, 1}, {1.0f, 0.0f, 0.0f ,1,0}},
-//
-//    // NORTH (Rectangle, longer in y-axis)
-//    {{ 1.0f, 0.0f, 1.0f, 0, 0}, { 1.0f, 2.0f, 1.0f , 0 ,1}, {0.0f, 2.0f, 1.0f , 1 , 1 }},
-//    {{ 1.0f, 0.0f, 1.0f, 0, 0}, {0.0f, 2.0f, 1.0f, 1, 1}, {0.0f, 0.0f, 1.0f ,1,0}},
-//
-//    // EAST (Rectangle, longer in y-axis)
-//    {{ 1.0f, 0.0f, 0.0f, 0, 0}, { 1.0f, 2.0f, 0.0f , 0 ,1}, {1.0f, 2.0f, 1.0f , 1 , 1 }},
-//    {{ 1.0f, 0.0f, 0.0f, 0, 0}, {1.0f, 2.0f, 1.0f, 1, 1}, {1.0f, 0.0f, 1.0f ,1,0}},
-//
-//    // WEST (Rectangle, longer in y-axis)
-//    {{ 0.0f, 0.0f, 1.0f, 0, 0}, { 0.0f, 2.0f, 1.0f , 0 ,1}, {0.0f, 2.0f, 0.0f , 1 , 1 }},
-//    {{ 0.0f, 0.0f, 1.0f, 0, 0}, {0.0f, 2.0f, 0.0f, 1, 1}, {0.0f, 0.0f, 0.0f ,1,0}},
-//
-//    // TOP (Square)
-//    {{ 0.0f, 2.0f, 0.0f, 0, 0}, { 0.0f, 2.0f, 1.0f , 0 ,1}, {1.0f, 2.0f, 1.0f , 1 , 1 }},
-//    {{ 0.0f, 2.0f, 0.0f, 0, 0}, {1.0f, 2.0f, 1.0f, 1, 1}, {1.0f, 2.0f, 0.0f ,1,0}},
-//
-//    // BOTTOM (Square)
-//    {{ 0.0f, 0.0f, 1.0f , 0 ,1},{ 0.0f, 0.0f, 0.0f, 0, 0}, {1.0f, 0.0f, 1.0f , 1 , 1 }},
-//    {{1.0f, 0.0f, 1.0f, 1, 1},{ 0.0f, 0.0f, 0.0f, 0, 0}, {1.0f, 0.0f, 0.0f ,1,0}},
-//});
 
         Mesh cube1 = new Mesh();
         String path = "src/objfiles/cube.obj";
@@ -64,17 +40,41 @@ public class ProjectionTest {
         board.setDrawBorder(true);
         board.setIsTransparent(true);
         
-        
         //center at the origin
         board.applyTrans(Engine.translationMatrix(-5, 0,-5));
         cube2.applyTrans(Engine.translationMatrix(-5, 0,-5));
+        cube1.applyTrans(Engine.translationMatrix(-5,0,-5));
+        cube1.applyTrans(Engine.scalingMatrix(1.01f,1.01f, 1.01f));
+        cube1.applyTrans(Engine.translationMatrix(0.01f,0.01f,0.01f));
+        //Stress test
         
-        
-        Window window = new Window(p);
         ArrayList<Mesh> world = new ArrayList();
-        world.add(cube1);
-        world.add(cube2);
-        world.add(board);
+//        for(int i = 0; i<10; i++){
+//            for(int j = 0;j<10; j++){
+//                for(int k = 0; k< 20;k++){
+//                    Mesh border = new Mesh();
+//                    Mesh cube = new Mesh();
+//                    border.copy(cube1);
+//                    cube.copy(cube2);
+//                    //border.applyTrans(Engine.translationMatrix(i,k,j));
+//                    cube.applyTrans(Engine.translationMatrix(i,k,j));
+//                    world.add(border);
+//                    world.add(cube);
+//                }
+//            }
+//        }
+        
+        Piece j = new Piece(Tetrominoes.J);
+        j.rotateLeftZ();
+        for(Mesh block: j.blocks){
+            world.add(block);
+        }
+      
+       
+//        world.add(cube2);
+       world.add(board);
+        
+       Window window = new Window(j);
         
        p.cameraVec = Engine.matrixMulti(Engine.translationMatrix(0, 36, -38), p.cameraVec);
        p.lookVec = Engine.matrixMulti(Engine.rotationMatrix(34.5f, 0, 0), p.lookVec);

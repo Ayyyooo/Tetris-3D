@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.Set;
+import game.Piece;
 
 /**
  *
@@ -24,14 +25,10 @@ public class Window extends JPanel{
     public JFrame jframe;
     private BufferedImage frame;
     
-    //basic input for debuging
-    Engine eng;
     private final Set<Integer> pressedKeys = new HashSet<>();
-    float xAngle = 0;
-    float yAngle = 0;
-    float zAngle = 0;
+    private final Piece piece;
     
-    public Window(Engine eng){
+    public Window(Piece piece){
         setFocusable(true);
         requestFocusInWindow();
         jframe = new JFrame("");
@@ -39,9 +36,8 @@ public class Window extends JPanel{
         jframe.add(this);
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.setVisible(true);
+        this.piece = piece;
         
-        //events Temporary
-        this.eng = eng;
         addKeyListener(new KeyAdapter() {
             
             @Override
@@ -58,8 +54,6 @@ public class Window extends JPanel{
     }
     
     public void update(BufferedImage frame){
-        //Temporary
-         //System.out.println("Camera pointing direction: x: "+this.xAngle +" y: "+this.yAngle+" z: "+this.zAngle);
         this.frame = frame;
         repaint();
     }
@@ -76,38 +70,38 @@ public class Window extends JPanel{
     private void handleKeys() {
         // 
         if (pressedKeys.contains(KeyEvent.VK_W)) {
-           eng.cameraVec = engine.elements.Vector.vectorAdd(eng.cameraVec,eng.lookVec);
+           piece.rotateLeftY();
         }
         if(pressedKeys.contains(KeyEvent.VK_S)){
-            eng.cameraVec = engine.elements.Vector.vectorSub(eng.cameraVec,eng.lookVec);
+           piece.rotateRightY(); 
         }
         if(pressedKeys.contains(KeyEvent.VK_A)){
-            eng.cameraVec = engine.elements.Vector.vectorSub(eng.cameraVec,engine.elements.Vector.crossProduct(eng.upVec,eng.lookVec));
+           piece.rotateLeftZ(); 
         }
         if(pressedKeys.contains(KeyEvent.VK_D)){
-            eng.cameraVec = engine.elements.Vector.vectorAdd(eng.cameraVec,engine.elements.Vector.crossProduct(eng.upVec,eng.lookVec));
+           piece.rotateRightZ(); 
         }
-        if(pressedKeys.contains(KeyEvent.VK_SPACE)){
-            eng.cameraVec = engine.elements.Vector.vectorSub(eng.cameraVec,eng.upVec);
-        }
-        if(pressedKeys.contains(KeyEvent.VK_SHIFT)){
-            //eng.cameraVec = engine.elements.Vector.vectorAdd(eng.cameraVec,eng.upVec);
-        }
+//        if(pressedKeys.contains(KeyEvent.VK_SPACE)){
+//            eng.cameraVec = engine.elements.Vector.vectorSub(eng.cameraVec,eng.upVec);
+//        }
+//        if(pressedKeys.contains(KeyEvent.VK_SHIFT)){
+//            //eng.cameraVec = engine.elements.Vector.vectorAdd(eng.cameraVec,eng.upVec);
+//        }
         if(pressedKeys.contains(KeyEvent.VK_LEFT)){
-            eng.lookVec = Engine.matrixMulti(Engine.rotationMatrix(0,-1, 0),eng.lookVec);
-            this.yAngle -=1;
+            piece.moveLeft();
+            System.out.println(piece.position);
         }
         if(pressedKeys.contains(KeyEvent.VK_RIGHT)){
-            eng.lookVec = Engine.matrixMulti(Engine.rotationMatrix(0, 1, 0),eng.lookVec);
-            this.yAngle +=1;
+            piece.moveRight();
+            System.out.println(piece.position);
         }
         if(pressedKeys.contains(KeyEvent.VK_UP)){
-            eng.lookVec = Engine.matrixMulti(Engine.rotationMatrix(1, 0, 0),eng.lookVec);
-            this.xAngle +=1;
+            piece.moveForward();
+            System.out.println(piece.position);
         }
         if(pressedKeys.contains(KeyEvent.VK_DOWN)){
-            eng.lookVec = Engine.matrixMulti(Engine.rotationMatrix(-1, 0, 0),eng.lookVec);
-            this.xAngle -=1;
+            piece.moveBackward();
+            System.out.println(piece.position);
         }
     }
     

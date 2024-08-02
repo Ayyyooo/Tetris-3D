@@ -85,16 +85,18 @@ public class Renderer {
         int maxY = Math.min(h/2, Math.max(Ay, Math.max(By, Cy)));
         
         for (int y = minY; y <= maxY; y++) {
+            boolean end = false;
             for(int x = minX; x<=maxX; x++){
                 float [] barycentric = barycentricCoords(Ax,Ay,Bx,By,Cx,Cy,x,y);
                 if(barycentric[0]>=0 && barycentric[1]>=0 && barycentric[2]>=0){
+                    end = true;
                     float z = tri.points[0].getZ()*barycentric[0]+tri.points[1].getZ()*barycentric[1]+tri.points[2].getZ()*barycentric[2];
                     if (z < depthBuffer[(x + w / 2)][(y + h / 2)] ) {
                         g.setColor(color);
                         g.drawLine(x, y, x, y);
                         depthBuffer[x + w / 2][y + h / 2] = z;
                     }
-                }
+                }else if(end){break;}
             }
         }
     }

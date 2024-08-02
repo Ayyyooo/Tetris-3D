@@ -44,8 +44,7 @@ public class UpdateWindow implements Runnable{
             render.renderFrame(projectedScreen);
             this.window.update(render.getFrame());
             yAngle += 0.4f; //Temporary
-           // System.out.println("Camera pointing direction: "+engine.lookVec);
-            System.out.println("Camera position "+engine.cameraVec);
+
             try {
                 Thread.sleep(10);  // Control animation speed
             } catch (InterruptedException e) {
@@ -76,9 +75,9 @@ public class UpdateWindow implements Runnable{
                     engine.cullBackFaces(projectedScene);
 
                     //clipps triangles in scene
-                    engine.clipTrianglesAgainstPlane(projectedScene);
+                    //engine.clipTrianglesAgainstPlane(projectedScene);
                     
-                    Light light = new Light(new Vector(0,0,-1), 0.6f);
+                    Light light = new Light(new Vector(0,0,-1), 0.3f);
                     Light.applyLLighting(projectedScene, light);
                 }
                 

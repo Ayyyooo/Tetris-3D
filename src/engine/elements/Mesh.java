@@ -141,7 +141,6 @@ public class Mesh {
      * @param position the position to set
      */
     public void setPosition(Vector position) {
-        System.out.println(position);
         this.position = position;
     }
 }
