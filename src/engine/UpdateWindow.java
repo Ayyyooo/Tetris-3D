@@ -14,10 +14,10 @@ import java.util.ArrayList;
 public class UpdateWindow implements Runnable{
     public Engine engine;
     public Window window;
-    private final ArrayList<Mesh> scene;
-    private final ArrayList<Mesh> screenElements;
+    private final ArrayList<ArrayList<Mesh>> scene; // multidimensional array of mesh each array of mesh represent a game object 
+    private final ArrayList<ArrayList<Mesh>> screenElements; // multidimensional array of mesh each array of mesh represent a screen object
     private int w,h; 
-    public UpdateWindow(Engine engine, Window window, ArrayList<Mesh> scene, ArrayList<Mesh> screenElements){
+    public UpdateWindow(Engine engine, Window window, ArrayList<ArrayList<Mesh>> scene, ArrayList<ArrayList<Mesh>> screenElements){
         this.engine = engine;
         this.window = window;
         this.w = window.getWidth();
@@ -46,7 +46,7 @@ public class UpdateWindow implements Runnable{
             yAngle += 0.4f; //Temporary
 
             try {
-                Thread.sleep(10);  // Control animation speed
+                Thread.sleep(16);  // Control animation speed
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -56,15 +56,13 @@ public class UpdateWindow implements Runnable{
     float yAngle = 0; //Temporary
     private ArrayList<Mesh> projectScene(){
     ArrayList<Mesh> projected = new ArrayList<>();
-            for(Mesh element: scene){
+        for(ArrayList<Mesh> gameObj: scene){
+            for(Mesh element: gameObj){
                 Mesh projectedScene = new Mesh();
                 projectedScene.copy(element);
                 
                 //rotation Temporary
                 projectedScene.applyTrans(Engine.rotationMatrix(0, yAngle,0));
-                
-                //position
-                projectedScene.applyTrans(Engine.translationMatrix(projectedScene.getPosition()));
                 
                 //camera matrix
                 projectedScene.applyTrans(engine.matrixFrom());
@@ -86,13 +84,15 @@ public class UpdateWindow implements Runnable{
                 
                 projected.add(projectedScene);
             }
+        }
             return projected;
     }
     float xAngle =0;
     float zAngle =0;
     private ArrayList<Mesh> projectScreen(){
         ArrayList<Mesh> projected = new ArrayList<>();
-            for(Mesh element: screenElements){
+            for(ArrayList<Mesh> screenObj: screenElements){
+            for(Mesh element: screenObj){
                 Mesh projectedScreen = new Mesh();
                 projectedScreen.copy(element);
                 
@@ -100,9 +100,6 @@ public class UpdateWindow implements Runnable{
                 projectedScreen.applyTrans(Engine.rotationMatrix(xAngle, yAngle,zAngle));
                 zAngle +=0.5f;
                 xAngle +=0.5f;
-                //position
-                projectedScreen.applyTrans(Engine.translationMatrix(projectedScreen.getPosition()));
-                
                 
                 //if the block is transparent avoid clipping and back face culling
                 if(!projectedScreen.getIsTransparent()){
@@ -121,6 +118,7 @@ public class UpdateWindow implements Runnable{
                 projected.add(projectedScreen);
             
             }
+        }
         return projected;
     }
     

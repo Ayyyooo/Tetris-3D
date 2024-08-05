@@ -10,7 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.HashSet;
 import java.util.Set;
-import game.Piece;
+import game.TetrisGame;
 
 /**
  *
@@ -24,11 +24,10 @@ import game.Piece;
 public class Window extends JPanel{
     public JFrame jframe;
     private BufferedImage frame;
-    
+    private TetrisGame game;
     private final Set<Integer> pressedKeys = new HashSet<>();
-    private final Piece piece;
     
-    public Window(Piece piece){
+    public Window(TetrisGame game){
         setFocusable(true);
         requestFocusInWindow();
         jframe = new JFrame("");
@@ -36,8 +35,7 @@ public class Window extends JPanel{
         jframe.add(this);
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.setVisible(true);
-        this.piece = piece;
-        
+        this.game = game;
         addKeyListener(new KeyAdapter() {
             
             @Override
@@ -70,38 +68,34 @@ public class Window extends JPanel{
     private void handleKeys() {
         // 
         if (pressedKeys.contains(KeyEvent.VK_W)) {
-           piece.rotateLeftY();
+           game.rotateLeftY();
         }
         if(pressedKeys.contains(KeyEvent.VK_S)){
-           piece.rotateRightY(); 
+           game.rotateRightY(); 
         }
         if(pressedKeys.contains(KeyEvent.VK_A)){
-           piece.rotateLeftZ(); 
+           game.rotateLeftZ(); 
         }
         if(pressedKeys.contains(KeyEvent.VK_D)){
-           piece.rotateRightZ(); 
+           game.rotateRightZ(); 
         }
-//        if(pressedKeys.contains(KeyEvent.VK_SPACE)){
-//            eng.cameraVec = engine.elements.Vector.vectorSub(eng.cameraVec,eng.upVec);
-//        }
-//        if(pressedKeys.contains(KeyEvent.VK_SHIFT)){
-//            //eng.cameraVec = engine.elements.Vector.vectorAdd(eng.cameraVec,eng.upVec);
-//        }
+        if(pressedKeys.contains(KeyEvent.VK_SPACE)){
+            game.hardDrop();
+        }
+////        if(pressedKeys.contains(KeyEvent.VK_SHIFT)){
+////            //eng.cameraVec = engine.elements.Vector.vectorAdd(eng.cameraVec,eng.upVec);
+////        }
         if(pressedKeys.contains(KeyEvent.VK_LEFT)){
-            piece.moveLeft();
-            System.out.println(piece.position);
+            game.moveLeft();
         }
         if(pressedKeys.contains(KeyEvent.VK_RIGHT)){
-            piece.moveRight();
-            System.out.println(piece.position);
+            game.moveRight();
         }
         if(pressedKeys.contains(KeyEvent.VK_UP)){
-            piece.moveForward();
-            System.out.println(piece.position);
+            game.moveForward();
         }
         if(pressedKeys.contains(KeyEvent.VK_DOWN)){
-            piece.moveBackward();
-            System.out.println(piece.position);
+            game.moveBackward();
         }
     }
     

@@ -217,6 +217,24 @@ public class Engine {
         return fCoords;
     }
     
+    public static void matrixMultiInPlace(float [][] matrix, Vector p){
+            float originalX = p.getX();
+            float originalY = p.getY();
+            float originalZ = p.getZ();
+            float originalW = p.getW();
+
+            p.setX(matrix[0][0]*originalX + matrix[0][1]*originalY + matrix[0][2]*originalZ + matrix[0][3]*originalW);
+            p.setY(matrix[1][0]*originalX + matrix[1][1]*originalY + matrix[1][2]*originalZ + matrix[1][3]*originalW);
+            p.setZ(matrix[2][0]*originalX + matrix[2][1]*originalY + matrix[2][2]*originalZ + matrix[2][3]*originalW);
+            p.setW(matrix[3][0]*originalX + matrix[3][1]*originalY + matrix[3][2]*originalZ + matrix[3][3]*originalW);
+
+            if(p.getW() != 0){
+                p.setX(p.getX() / p.getW());
+                p.setY(p.getY() / p.getW());
+                p.setZ(p.getZ() / p.getW());
+            }
+    }
+    
     //intersection point between a line and a plane
     public static Vertex intersection(Vector [] plane, Vertex start, Vertex end){
         //t=D-<N,A>/<N<B-A>>
@@ -224,9 +242,9 @@ public class Engine {
         //Q = A+t(B-A)
         Vector intercept = Vector.vectorAdd(start, Vector.vectorMult(Vector.vectorSub(end, start), t));
         //u, v
-        float u = start.getU() + t*(end.getU()-start.getU());
-        float v = start.getV() + t*(end.getV()-start.getV());
-        return new Vertex(intercept.getX(),intercept.getY(), intercept.getZ(),u,v);
+//        float u = start.getU() + t*(end.getU()-start.getU());
+//        float v = start.getV() + t*(end.getV()-start.getV());
+        return new Vertex(intercept.getX(),intercept.getY(), intercept.getZ(),0,0);
     }
     //BACK-FACE CULLING
     public void cullBackFaces(Mesh mesh){
@@ -270,15 +288,15 @@ public class Engine {
                 insPoint[inside][0]= tri.points[0].getX();
                 insPoint[inside][1]= tri.points[0].getY();
                 insPoint[inside][2]= tri.points[0].getZ();
-                insPoint[inside][3]= tri.points[0].getU();
-                insPoint[inside][4]= tri.points[0].getV();
+//                insPoint[inside][3]= tri.points[0].getU();
+//                insPoint[inside][4]= tri.points[0].getV();
                 inside++;
             }else{
                 outPoint[outside][0]= tri.points[0].getX();
                 outPoint[outside][1]= tri.points[0].getY();
                 outPoint[outside][2]= tri.points[0].getZ();
-                outPoint[outside][3]= tri.points[0].getU();
-                outPoint[outside][4]= tri.points[0].getV();
+//                outPoint[outside][3]= tri.points[0].getU();
+//                outPoint[outside][4]= tri.points[0].getV();
                 outside++;
             }
             
@@ -286,15 +304,15 @@ public class Engine {
                 insPoint[inside][0]= tri.points[1].getX();
                 insPoint[inside][1]= tri.points[1].getY();
                 insPoint[inside][2]= tri.points[1].getZ(); 
-                insPoint[inside][3]= tri.points[1].getU();
-                insPoint[inside][4]= tri.points[1].getV(); 
+//                insPoint[inside][3]= tri.points[1].getU();
+//                insPoint[inside][4]= tri.points[1].getV(); 
                 inside++;
             }else{
                 outPoint[outside][0]= tri.points[1].getX();
                 outPoint[outside][1]= tri.points[1].getY();
                 outPoint[outside][2]= tri.points[1].getZ();
-                outPoint[outside][3]= tri.points[1].getU();
-                outPoint[outside][4]= tri.points[1].getV();
+//                outPoint[outside][3]= tri.points[1].getU();
+//                outPoint[outside][4]= tri.points[1].getV();
                 outside++;
             }
             
@@ -302,15 +320,15 @@ public class Engine {
                 insPoint[inside][0]= tri.points[2].getX();
                 insPoint[inside][1]= tri.points[2].getY();
                 insPoint[inside][2]= tri.points[2].getZ();   
-                insPoint[inside][3]= tri.points[2].getU();
-                insPoint[inside][4]= tri.points[2].getV();   
+//                insPoint[inside][3]= tri.points[2].getU();
+//                insPoint[inside][4]= tri.points[2].getV();   
                 inside++;
             }else{
                 outPoint[outside][0]= tri.points[2].getX();
                 outPoint[outside][1]= tri.points[2].getY();
                 outPoint[outside][2]= tri.points[2].getZ();
-                outPoint[outside][3]= tri.points[2].getU();
-                outPoint[outside][4]= tri.points[2].getV();
+//                outPoint[outside][3]= tri.points[2].getU();
+//                outPoint[outside][4]= tri.points[2].getV();
                 outside++;
             }
             

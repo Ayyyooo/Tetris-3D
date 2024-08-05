@@ -17,7 +17,6 @@ import java.util.LinkedList;
 public class Mesh {
 
     public LinkedList<Triangle> m;
-    private Vector position = new Vertex();
     private Boolean isTransparent = false;
     private Boolean drawBorder = false;
     public Mesh(){
@@ -46,26 +45,20 @@ public class Mesh {
         while(iterator.hasNext()){
             for (Vector point : iterator.next().points) {
                 if(!transformedVertex.contains(point)){
-                    Vector fPoint = Engine.matrixMulti(matrix, point);
-                    point.setX(fPoint.getX());
-                    point.setY(fPoint.getY());
-                    point.setZ(fPoint.getZ());
+                    Engine.matrixMultiInPlace(matrix, point);
                     transformedVertex.add(point);
                 }
             }
         }
     }
     
+    
     public void applyProjection(float [][] matrix){
         Iterator<Triangle> iterator = this.m.iterator();
         while(iterator.hasNext()){
             
             for (Vertex point : iterator.next().points) {
-                Vector fPoint = Engine.matrixMulti(matrix, point);
-                point.setX(fPoint.getX());
-                point.setY(fPoint.getY());
-                point.setZ(fPoint.getZ());
-                point.setW(fPoint.getW());
+                Engine.matrixMultiInPlace(matrix, point);
                 
             }
         }
@@ -75,9 +68,6 @@ public class Mesh {
         Iterator<Triangle> iterator = m2.m.iterator();
         this.setDrawBorder(m2.getDrawBorder());
         this.setIsTransparent(m2.getIsTransparent());
-        //deep copy of vector
-        Vector v = m2.getPosition();
-        this.setPosition(new Vector(v.getX(),v.getY(),v.getZ()));
         while(iterator.hasNext()){
             this.m.add(new Triangle( new Vertex[]{
             new Vertex(),new Vertex(),new Vertex()
@@ -89,8 +79,8 @@ public class Mesh {
                 tri.points[j].setX(itNext.points[j].getX());
                 tri.points[j].setY(itNext.points[j].getY());
                 tri.points[j].setZ(itNext.points[j].getZ());
-                tri.points[j].setU(itNext.points[j].getU());
-                tri.points[j].setV(itNext.points[j].getV());
+//                tri.points[j].setU(itNext.points[j].getU());
+//                tri.points[j].setV(itNext.points[j].getV());
             }
         }
     }
@@ -128,19 +118,5 @@ public class Mesh {
      */
     public void setDrawBorder(Boolean drawBorder) {
         this.drawBorder = drawBorder;
-    }
-    
-    /**
-     * @return the position
-     */
-    public Vector getPosition() {
-        return position;
-    }
-
-    /**
-     * @param position the position to set
-     */
-    public void setPosition(Vector position) {
-        this.position = position;
     }
 }

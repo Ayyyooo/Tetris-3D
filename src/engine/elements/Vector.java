@@ -116,6 +116,6 @@ public class Vector {
     }
     @Override
     public String toString(){
-        return "X: "+this.getX()+"Y: "+this.getY()+"Z: "+this.getZ();
+        return "X: "+this.getX()+"Y: "+this.getY()+"Z: "+this.getZ()+"W: "+this.getW();
     }
 }
