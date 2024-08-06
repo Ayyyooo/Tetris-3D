@@ -32,7 +32,7 @@ public class TetrisGame {
     
     public TetrisGame(ArrayList<ArrayList<Mesh>> scene){
         this.level = 0;
-        stack = new Color[20][10][10]; //y,x,z
+        stack = new Color[15][6][6]; //y,x,z
         this.scene = scene;
         startGame();
         this.timer = new Timer(delay, new ActionListener() {
@@ -52,7 +52,7 @@ public class TetrisGame {
         ObjFileLoader.loadFile(board, "src/objfiles/board.obj");
         board.setDrawBorder(true);
         board.setIsTransparent(true);
-        board.applyTrans(Engine.translationMatrix(-5, 0,-5));
+        board.applyTrans(Engine.translationMatrix(-3f, 0,-3f));
         ArrayList<Mesh> boardMesh = new ArrayList<>();
         boardMesh.add(board);
         this.scene.set(2,boardMesh); // index 2 board
@@ -62,7 +62,7 @@ public class TetrisGame {
     
     private void generateNewPiece(){
         movingPiece = new Piece(Tetrominoes.values()[(new Random()).nextInt(Tetrominoes.values().length)],false);
-        //movingPiece = new Piece(Tetrominoes.TEST,false);
+        //movingPiece = new Piece(Tetrominoes.SQUARE,false);
         shadowPiece = new Piece(this.movingPiece.type,true);
         moveShadowDown();
         this.scene.set(0,movingPiece.blocks); //index 0 moving piece
@@ -75,13 +75,14 @@ public class TetrisGame {
         delay = Math.max(baseDelay - (level - 1) * decrement, 80); // Minimum delay of 80ms
     }
     
+    //returns false it the piece collides with another piece or with the walls
     private boolean collide(ArrayList<Vector> position){
         for(Vector p: position){
-            int x = ((int)Math.floor(p.getX()))+5;
+            int x = ((int)Math.floor(p.getX()))+3;
             int y = (int)Math.floor(p.getY());
-            int z = ((int)Math.floor(p.getZ()))+5;
-            if(y>19) y=19;
-            if(x<0 || x>9 || y<0 || z<0 || z>9 )return false;
+            int z = ((int)Math.floor(p.getZ()))+3;
+            if(y>14) y=14;
+            if(x<0 || x>5 || y<0 || z<0 || z>5 )return false;
             if(stack[y][x][z] !=null)return false;
         }
         return true;
@@ -90,22 +91,74 @@ public class TetrisGame {
     private void bottomHit(){
         //updates the stack
         Color color = this.movingPiece.getColor();
+        int minY = 14;
+        int maxY = 0;
         for(Vector block: this.movingPiece.positions){
-            int x = ((int)Math.floor(block.getX()))+5;
+            int x = ((int)Math.floor(block.getX()))+3;
             int y = (int)Math.floor(block.getY());
-            int z = ((int)Math.floor(block.getZ()))+5;
+            int z = ((int)Math.floor(block.getZ()))+3;
+            minY = Math.min(y, minY);
+            maxY = Math.max(y, maxY);
             this.stack[y][x][z] = color;
         }
+        checkCompleteLines(minY, maxY);
+        updateScene();
+        generateNewPiece();
+    }
+    
+    //checks the affected planes and clears if the plane is completed
+    private void checkCompleteLines(int min, int max){
+        int clearedLines = 0;
+        for(int y = min;y<=max;y++){
+            if(isComplete(y)){
+                clearedLines++;
+                clearLines(y);
+            }
+        }
+    }    
+    
+    private void clearLines(int y){
+        int i = y;
+        while(y<15 && i<15){
+            y++;
+            boolean empty = false;
+            if(!isComplete(y)){
+                empty = true;
+                for(int x = 0; x<6;x++){
+                    for(int z = 0; z<6;z++){
+                        System.out.println("x: "+x +" y: "+y+" z: "+z+" i: "+i);
+                        if(this.stack[y][x][z]!= null)empty = false; 
+                        this.stack[i][x][z] = this.stack[y][x][z];
+                     
+                    }   
+                }
+                i++;
+            }
+            if(empty)break;
+        }
+    }
+    
+    private boolean isComplete(int y){
+        for(int x = 0; x<6;x++){
+                for(int z = 0; z<6;z++){
+                    
+                  if(this.stack[y][x][z]==null) return false;   
+                }
+            }
+        return true;
+    }
+    
+    //updates the scene
+    private void updateScene(){
         Mesh cube = new Mesh();
         String path = "src/objfiles/cube.obj";
         ObjFileLoader.loadFile(cube, path);
         ArrayList<Mesh> stackMeshes = new ArrayList<>();
-        
         //updates scene
         boolean end = true;
-        for(int y = 0; y<20; y++){
-            for(int x = 0;x<10; x++){
-               for(int z = 0; z<10; z++){
+        for(int y = 0; y<15; y++){
+            for(int x = 0;x<6; x++){
+               for(int z = 0; z<6; z++){
                    
                    if(this.stack[y][x][z] != null){
                        System.out.println("x "+x+" y "+y+" z "+z);
@@ -118,15 +171,15 @@ public class TetrisGame {
                             boolean condition = switch (i / 2) {
                                 case 0 -> (z > 0 && this.stack[y][x][z - 1] != null); // front face z-
                                 case 1 -> (x > 0 && this.stack[y][x - 1][z] != null); // left face x-
-                                case 2 -> (y < 19 && this.stack[y + 1][x][z] != null); // top face y+
-                                case 3 -> (x < 9 && this.stack[y][x + 1][z] != null); // right face x+
+                                case 2 -> (y < 14 && this.stack[y + 1][x][z] != null); // top face y+
+                                case 3 -> (x < 5 && this.stack[y][x + 1][z] != null); // right face x+
                                 case 4 -> true; // bottom face y-
-                                case 5 -> (z < 9 && this.stack[y][x][z + 1] != null); // back face z+
+                                case 5 -> (z < 5 && this.stack[y][x][z + 1] != null); // back face z+
                                 default -> false;
                             };
 
                             if (condition) {
-                                iterator.remove();
+                                iterator.remove(); //removes non visible faces
                                 System.out.println("face removed");
                                 System.out.println(i);
                             }
@@ -135,7 +188,7 @@ public class TetrisGame {
                         
                        mesh.setSolidColor(this.stack[y][x][z]);
                        
-                       mesh.applyTrans(Engine.translationMatrix(x-5,y,z-5));
+                       mesh.applyTrans(Engine.translationMatrix(x-3,y,z-3));
                        stackMeshes.add(mesh);
                        end = false;
                    }
@@ -145,7 +198,6 @@ public class TetrisGame {
             end=true;
         }
         this.scene.set(3, stackMeshes);
-        generateNewPiece();
     }
     
     //moves shadow to the bottom hit
@@ -298,4 +350,10 @@ public class TetrisGame {
         this.movingPiece.position.setZ(this.shadowPiece.position.getZ());
         bottomHit();
     }
+    
+    //moves the piece down (soft drop)
+    public void softDrop(){
+        if(collide(this.movingPiece.getMovedPosition(0, -1, 0)))this.movingPiece.moveDown();
+    }
+    
 }

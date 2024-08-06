@@ -31,7 +31,7 @@ public class Piece {
         constructPiece();
         if(isTransparent) setTransparent();
         else setColor();
-        position = new Vector(0,20,0);
+        position = new Vector(0,15,0);
         this.isTransparent = isTransparent;
     }
     
@@ -46,20 +46,20 @@ public class Piece {
             case TEST-> {
                   Mesh mesh = new Mesh();
                   mesh.copy(cube);
-                mesh.applyTrans(Engine.translationMatrix(0, 20, 0));
+                mesh.applyTrans(Engine.translationMatrix(0, 15, 0));
                 this.blocks.add(mesh);
-                this.positions.add(Vector.vectorAdd(center, new Vector(0,20,0)));
+                this.positions.add(Vector.vectorAdd(center, new Vector(0,15,0)));
                 if(!isTransparent) this.color = new Color(120, 120, 120);
             }
             case STRAIGHT -> { //creates a straight "l"
                 //translate offset (-1.5,-0.5,-0.5)
                 if(!isTransparent) this.color = new Color(1, 255, 244);
-                for(int i = 0;i<4;i++){ 
+                for(int i = 0;i<3;i++){ 
                     Mesh mesh = new Mesh();
                     mesh.copy(cube);
-                    mesh.applyTrans(Engine.translationMatrix(i,20,0)); //translates each cube to its postition
+                    mesh.applyTrans(Engine.translationMatrix(i,15,0)); //translates each cube to its postition
                     this.blocks.add(mesh);
-                    this.positions.add(Vector.vectorAdd(center, new Vector(i,20,0)));
+                    this.positions.add(Vector.vectorAdd(center, new Vector(i,15,0)));
                 }
             }
             case J -> { //creates a J
@@ -67,33 +67,31 @@ public class Piece {
                 for(int i = 0;i<3;i++){ 
                     Mesh mesh = new Mesh();
                     mesh.copy(cube);
-                    mesh.applyTrans(Engine.translationMatrix(i,20,0)); //translates each cube to its postition
+                    mesh.applyTrans(Engine.translationMatrix(i,15,0)); //translates each cube to its postition
                     this.blocks.add(mesh);
-                    this.positions.add(Vector.vectorAdd(center, new Vector(i,20,0)));
+                    this.positions.add(Vector.vectorAdd(center, new Vector(i,15,0)));
                 }
                 Mesh mesh = new Mesh();
                 mesh.copy(cube);
-                mesh.applyTrans(Engine.translationMatrix(0,21,0)); //translates each cube to its postition
+                mesh.applyTrans(Engine.translationMatrix(0,16,0)); //translates each cube to its postition
                 this.blocks.add(mesh);
-                this.positions.add(Vector.vectorAdd(center, new Vector(0,21,0)));
+                this.positions.add(Vector.vectorAdd(center, new Vector(0,16,0)));
                 Mesh mesh1 = new Mesh();
                 mesh1.copy(cube);
-                mesh1.applyTrans(Engine.translationMatrix(0,20,-1)); //translates each cube to its postition
+                mesh1.applyTrans(Engine.translationMatrix(0,15,-1)); //translates each cube to its postition
                 this.blocks.add(mesh1);
-                this.positions.add(Vector.vectorAdd(center, new Vector(0,20,-1)));
+                this.positions.add(Vector.vectorAdd(center, new Vector(0,15,-1)));
             }
             case SQUARE -> { // creates a square "o"
                 //translate offset (0,0,0)
                 if(!isTransparent) this.color = new Color(255, 242, 5);
                 for(int i =0; i<2;i++){
                     for(int j =0; j<2;j++){
-                        for(int k=0; k<2;k++){
                             Mesh mesh = new Mesh();
                             mesh.copy(cube);
-                            mesh.applyTrans(Engine.translationMatrix(i,j+20,k)); //translates each cube to its postition
-                            this.positions.add(Vector.vectorAdd(center, new Vector(i,j+20,k)));
+                            mesh.applyTrans(Engine.translationMatrix(0,i+15,j)); //translates each cube to its postition
+                            this.positions.add(Vector.vectorAdd(center, new Vector(0,i+15,j)));
                             this.blocks.add(mesh);
-                        }
                     }
                 }
             }
@@ -105,35 +103,31 @@ public class Piece {
                     mesh.copy(cube);
                     this.blocks.add(mesh);
                 }
-                this.blocks.get(0).applyTrans(Engine.translationMatrix(0,21,0)); 
-                this.positions.add(Vector.vectorAdd(center, new Vector(0,21,0)));
-                this.blocks.get(1).applyTrans(Engine.translationMatrix(1,21,0));
-                this.positions.add(Vector.vectorAdd(center, new Vector(1,21,0)));
-                this.blocks.get(2).applyTrans(Engine.translationMatrix(1,20,0));
-                this.positions.add(Vector.vectorAdd(center, new Vector(1,20,0)));
-                this.blocks.get(3).applyTrans(Engine.translationMatrix(2,20,0));
-                this.positions.add(Vector.vectorAdd(center, new Vector(2,20,0)));
+                this.blocks.get(0).applyTrans(Engine.translationMatrix(0,16,0)); 
+                this.positions.add(Vector.vectorAdd(center, new Vector(0,16,0)));
+                this.blocks.get(1).applyTrans(Engine.translationMatrix(1,16,0));
+                this.positions.add(Vector.vectorAdd(center, new Vector(1,16,0)));
+                this.blocks.get(2).applyTrans(Engine.translationMatrix(1,15,0));
+                this.positions.add(Vector.vectorAdd(center, new Vector(1,15,0)));
+                this.blocks.get(3).applyTrans(Engine.translationMatrix(2,15,0));
+                this.positions.add(Vector.vectorAdd(center, new Vector(2,15,0)));
             }
             case T -> { // creates a T
                 //translate offset (-1.5,-0.5,-0.5)
                 if(!isTransparent) this.color = new Color(255, 17, 123);
-                for(int i =0; i<6;i++){
+                for(int i =0; i<4;i++){
                     Mesh mesh = new Mesh();
                     mesh.copy(cube);
                     this.blocks.add(mesh);
                 }
-                this.blocks.get(0).applyTrans(Engine.translationMatrix(0,20,0));
-                this.positions.add(Vector.vectorAdd(center, new Vector(0,20,0)));
-                this.blocks.get(1).applyTrans(Engine.translationMatrix(1,20,0));
-                this.positions.add(Vector.vectorAdd(center, new Vector(1,20,0)));
-                this.blocks.get(2).applyTrans(Engine.translationMatrix(2,20,0));
-                this.positions.add(Vector.vectorAdd(center, new Vector(2,20,0)));
-                this.blocks.get(3).applyTrans(Engine.translationMatrix(1,21,0));
-                this.positions.add(Vector.vectorAdd(center, new Vector(1,21,0)));
-                this.blocks.get(4).applyTrans(Engine.translationMatrix(1,20,1));
-                this.positions.add(Vector.vectorAdd(center, new Vector(1,20,1)));
-                this.blocks.get(5).applyTrans(Engine.translationMatrix(1,20,-1));
-                this.positions.add(Vector.vectorAdd(center, new Vector(1,20,-1)));
+                this.blocks.get(0).applyTrans(Engine.translationMatrix(0,15,0));
+                this.positions.add(Vector.vectorAdd(center, new Vector(0,15,0)));
+                this.blocks.get(1).applyTrans(Engine.translationMatrix(1,15,0));
+                this.positions.add(Vector.vectorAdd(center, new Vector(1,15,0)));
+                this.blocks.get(2).applyTrans(Engine.translationMatrix(2,15,0));
+                this.positions.add(Vector.vectorAdd(center, new Vector(2,15,0)));
+                this.blocks.get(3).applyTrans(Engine.translationMatrix(1,16,0));
+                this.positions.add(Vector.vectorAdd(center, new Vector(1,16,0)));
             }
 
         }
