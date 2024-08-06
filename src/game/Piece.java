@@ -204,27 +204,27 @@ public class Piece {
     }
     
     public void rotateRightY(){
-        if(this.type == Tetrominoes.SQUARE)return;
+        //if(this.type == Tetrominoes.SQUARE)return;
         rotate(0,90,0);
         this.rotationStateY = (this.rotationStateY==270)? 0 :this.rotationStateY+90;
         
     }
     
     public void rotateRightZ(){
-        if(this.type == Tetrominoes.SQUARE)return;
+        //if(this.type == Tetrominoes.SQUARE)return;
         rotate(0,0,90);
         this.rotationStateZ = (this.rotationStateZ==270)? 0 :this.rotationStateZ+90;
     }
     
     public void rotateLeftY(){
-        if(this.type == Tetrominoes.SQUARE)return;
+        //if(this.type == Tetrominoes.SQUARE)return;
         rotate(0,-90,0);
         this.rotationStateY = (this.rotationStateY==0)? 270 :this.rotationStateY-90;
         
     }
     
     public void rotateLeftZ(){
-        if(this.type == Tetrominoes.SQUARE)return;
+        //if(this.type == Tetrominoes.SQUARE)return;
         rotate(0,0,-90);
         this.rotationStateZ = (this.rotationStateZ==0)? 270 :this.rotationStateZ-90;
     }
