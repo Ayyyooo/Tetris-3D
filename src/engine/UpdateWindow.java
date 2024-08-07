@@ -6,6 +6,7 @@ package engine;
 import engine.elements.Light;
 import engine.elements.Mesh;
 import engine.elements.Vector;
+import game.ScreenGame;
 import java.util.ArrayList;
 /**
  *
@@ -17,13 +18,15 @@ public class UpdateWindow implements Runnable{
     private final ArrayList<ArrayList<Mesh>> scene; // multidimensional array of mesh each array of mesh represent a game object 
     private final ArrayList<ArrayList<Mesh>> screenElements; // multidimensional array of mesh each array of mesh represent a screen object
     private int w,h; 
-    public UpdateWindow(Engine engine, Window window, ArrayList<ArrayList<Mesh>> scene, ArrayList<ArrayList<Mesh>> screenElements){
+    private ScreenGame screenG;
+    public UpdateWindow(Engine engine, Window window, ArrayList<ArrayList<Mesh>> scene, ArrayList<ArrayList<Mesh>> screenElements, ScreenGame screenG){
         this.engine = engine;
         this.window = window;
         this.w = window.getWidth();
         this.h = window.getHeight();
         this.scene = scene;
         this.screenElements = screenElements;
+        this.screenG = screenG;
     }
     @Override
     public void run(){
@@ -87,37 +90,34 @@ public class UpdateWindow implements Runnable{
         }
             return projected;
     }
-    float xAngle =0;
-    float zAngle =0;
+
+    
     private ArrayList<Mesh> projectScreen(){
+        screenG.updateScreen();
         ArrayList<Mesh> projected = new ArrayList<>();
             for(ArrayList<Mesh> screenObj: screenElements){
-            for(Mesh element: screenObj){
-                Mesh projectedScreen = new Mesh();
-                projectedScreen.copy(element);
-                
-                //rotation Temporary
-                projectedScreen.applyTrans(Engine.rotationMatrix(xAngle, yAngle,zAngle));
-                zAngle +=0.5f;
-                xAngle +=0.5f;
-                
-                //if the block is transparent avoid clipping and back face culling
-                if(!projectedScreen.getIsTransparent()){
-                    //back face culling
-                    engine.cullBackFaces(projectedScreen);
+                if(screenObj == null) continue;
+                for(Mesh element: screenObj){
+                    Mesh projectedScreen = new Mesh();
+                    projectedScreen.copy(element);
 
-                    //clipps triangles in scene
-                    engine.clipTrianglesAgainstPlane(projectedScreen);
-                    
-                    Light light = new Light(engine.cameraVec, 0.3f);
-                    Light.applyLLighting(projectedScreen, light);
+                    //if the block is transparent avoid clipping and back face culling
+                    if(!projectedScreen.getIsTransparent()){
+                        //back face culling
+                        engine.cullBackFaces(projectedScreen);
+
+                        //clipps triangles in scene
+                        engine.clipTrianglesAgainstPlane(projectedScreen);
+
+                        Light light = new Light(engine.cameraVec, 0.3f);
+                        Light.applyLLighting(projectedScreen, light);
+                    }
+
+                    //projects screen elements
+                    projectedScreen.applyProjection(engine.projMatrix);
+                    projected.add(projectedScreen);
+
                 }
-                
-                //projects screen elements
-                projectedScreen.applyProjection(engine.projMatrix);
-                projected.add(projectedScreen);
-            
-            }
         }
         return projected;
     }

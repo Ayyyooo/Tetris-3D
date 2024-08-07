@@ -17,37 +17,19 @@ public class ProjectionTest {
        
         
         //game test 
-        ArrayList<ArrayList<Mesh>> scene = new ArrayList();
-        ArrayList<ArrayList<Mesh>> screen = new ArrayList();
-        TetrisGame tgame = new TetrisGame(scene);
-        
-        //Stress test
-        
-        
-//        for(int i = 0; i<10; i++){
-//            for(int j = 0;j<10; j++){
-//                for(int k = 0; k< 20;k++){
-//                    Mesh border = new Mesh();
-//                    Mesh cube = new Mesh();
-//                    border.copy(cube1);
-//                    cube.copy(cube2);
-//                    //border.applyTrans(Engine.translationMatrix(i,k,j));
-//                    cube.applyTrans(Engine.translationMatrix(i,k,j));
-//                    world.add(border);
-//                    world.add(cube);
-//                }
-//            }
-//        }
-        
-
+       ArrayList<ArrayList<Mesh>> scene = new ArrayList();
+       ArrayList<ArrayList<Mesh>> screen = new ArrayList();
+       ScreenGame screenGame = new ScreenGame(screen);
+       TetrisGame tgame = new TetrisGame(scene, screenGame);
        
-       Window window = new Window(tgame);
+       Controls controls = new Controls(tgame);
+       Window window = new Window(controls);
         
-       p.cameraVec = Engine.matrixMulti(Engine.translationMatrix(0, 36, -38), p.cameraVec);
-       p.lookVec = Engine.matrixMulti(Engine.rotationMatrix(34.5f, 0, 0), p.lookVec);
+       p.cameraVec = Engine.matrixMulti(Engine.translationMatrix(0, 27, -27), p.cameraVec);
+       p.lookVec = Engine.matrixMulti(Engine.rotationMatrix(35f, 0, 0), p.lookVec);
         
         
-        UpdateWindow update = new UpdateWindow(p,window,scene,screen);
+        UpdateWindow update = new UpdateWindow(p,window,scene,screen,screenGame);
         Thread updateThread = new Thread(update);
         updateThread.start();
 

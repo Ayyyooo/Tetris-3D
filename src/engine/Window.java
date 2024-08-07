@@ -24,10 +24,10 @@ import game.TetrisGame;
 public class Window extends JPanel{
     public JFrame jframe;
     private BufferedImage frame;
-    private TetrisGame game;
     private final Set<Integer> pressedKeys = new HashSet<>();
+    Controls controls;
     
-    public Window(TetrisGame game){
+    public Window(Controls controls){
         setFocusable(true);
         requestFocusInWindow();
         jframe = new JFrame("");
@@ -35,20 +35,10 @@ public class Window extends JPanel{
         jframe.add(this);
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.setVisible(true);
-        this.game = game;
-        addKeyListener(new KeyAdapter() {
-            
-            @Override
-            public void keyPressed(KeyEvent e) {
-                pressedKeys.add(e.getKeyCode());
-                handleKeys();
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                pressedKeys.remove(e.getKeyCode());
-                handleKeys();
-           }});
+        this.controls = controls;
+        addKeyListener(controls);
+        addMouseMotionListener(controls);
+        addMouseListener(controls);
     }
     
     public void update(BufferedImage frame){
@@ -64,39 +54,5 @@ public class Window extends JPanel{
         }
     }
     
-    //temporary
-    private void handleKeys() {
-        // 
-        if (pressedKeys.contains(KeyEvent.VK_W)) {
-           game.rotateLeftY();
-        }
-        if(pressedKeys.contains(KeyEvent.VK_S)){
-           game.rotateRightY(); 
-        }
-        if(pressedKeys.contains(KeyEvent.VK_A)){
-           game.rotateLeftZ(); 
-        }
-        if(pressedKeys.contains(KeyEvent.VK_D)){
-           game.rotateRightZ(); 
-        }
-        if(pressedKeys.contains(KeyEvent.VK_SPACE)){
-            game.hardDrop();
-        }
-////        if(pressedKeys.contains(KeyEvent.VK_SHIFT)){
-////            //eng.cameraVec = engine.elements.Vector.vectorAdd(eng.cameraVec,eng.upVec);
-////        }
-        if(pressedKeys.contains(KeyEvent.VK_LEFT)){
-            game.moveLeft();
-        }
-        if(pressedKeys.contains(KeyEvent.VK_RIGHT)){
-            game.moveRight();
-        }
-        if(pressedKeys.contains(KeyEvent.VK_UP)){
-            game.moveForward();
-        }
-        if(pressedKeys.contains(KeyEvent.VK_DOWN)){
-            game.moveBackward();
-        }
-    }
     
 }

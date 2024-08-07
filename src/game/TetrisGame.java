@@ -1,5 +1,5 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/FileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package game;
@@ -10,9 +10,9 @@ import engine.elements.Triangle;
 import engine.elements.Vector;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Random;
 import javax.swing.Timer;
 
@@ -22,47 +22,66 @@ import javax.swing.Timer;
  * @author josja
  */
 public class TetrisGame {
-    private Timer timer;
-    Piece movingPiece;
-    Piece shadowPiece;
+    private final Timer timer;
+    public Piece movingPiece;
+    public Piece shadowPiece;
     private int delay;
     private int level;
-    private Color [][][] stack; 
-    private ArrayList<ArrayList<Mesh>> scene;
+    private final Color [][][] stack; 
+    private final ArrayList<ArrayList<Mesh>> scene;
+    public final LinkedList<Tetrominoes> next;
+    public Tetrominoes saved;
+    private ScreenGame sgame;
     
-    public TetrisGame(ArrayList<ArrayList<Mesh>> scene){
+    public TetrisGame(ArrayList<ArrayList<Mesh>> scene, ScreenGame sgame){
         this.level = 0;
-        stack = new Color[15][6][6]; //y,x,z
+        this.stack = new Color[15][6][6]; //y,x,z
         this.scene = scene;
+        this.next = new LinkedList<>();
+        this.saved = null;
+        this.sgame = sgame;
+        sgame.setTetrisGame(this);
         startGame();
-        this.timer = new Timer(delay, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                movePieceDown();
-            }
+        this.timer = new Timer(delay, (ActionEvent e) -> {
+            movePieceDown();
         });
         this.timer.start();
     }
     
     private void startGame(){
-        calculateDelay();
-        for(int i= 0; i<4;i++)this.scene.add(new ArrayList<>());
-        generateNewPiece();
-        Mesh board = new Mesh();
+        calculateDelay(); //calculates delay
+        for(int i= 0; i<4;i++)this.scene.add(new ArrayList<>());// adds an array list to scene
+        Random random = new Random(); 
+        for (int i = 0; i < 4; i++) {
+            int randomIndex = random.nextInt(Tetrominoes.values().length); // Generate random index
+            this.next.add(Tetrominoes.values()[randomIndex]); // Add corresponding Tetrominoes value
+        }
+        generateNewPiece(); //generates a new piece
+        Mesh board = new Mesh(); //creates the board
         ObjFileLoader.loadFile(board, "src/objfiles/board.obj");
         board.setDrawBorder(true);
         board.setIsTransparent(true);
-        board.applyTrans(Engine.translationMatrix(-3f, 0,-3f));
-        ArrayList<Mesh> boardMesh = new ArrayList<>();
+        board.applyTrans(Engine.translationMatrix(-3f, 0,-3f)); //translates board to origin 
+        ArrayList<Mesh> boardMesh = new ArrayList<>(); 
         boardMesh.add(board);
         this.scene.set(2,boardMesh); // index 2 board
         ArrayList<Mesh> stackMeshes = new ArrayList<>();
         this.scene.set(3,stackMeshes); // index 3 Stack
+        this.sgame.createPieces();
     }
     
     private void generateNewPiece(){
-        movingPiece = new Piece(Tetrominoes.values()[(new Random()).nextInt(Tetrominoes.values().length)],false);
-        //movingPiece = new Piece(Tetrominoes.SQUARE,false);
+        movingPiece = new Piece(this.next.pop(),false);
+        this.next.add(Tetrominoes.values()[(new Random()).nextInt(Tetrominoes.values().length)]);
+        shadowPiece = new Piece(this.movingPiece.type,true);
+        moveShadowDown();
+        this.scene.set(0,movingPiece.blocks); //index 0 moving piece
+        this.scene.set(1,shadowPiece.blocks); //index 1 shadow piece
+        this.sgame.updatePieces();
+    }
+    
+    private void generateNewPiece(Tetrominoes type){
+        movingPiece = new Piece(type,false);
         shadowPiece = new Piece(this.movingPiece.type,true);
         moveShadowDown();
         this.scene.set(0,movingPiece.blocks); //index 0 moving piece
@@ -126,7 +145,6 @@ public class TetrisGame {
                 empty = true;
                 for(int x = 0; x<6;x++){
                     for(int z = 0; z<6;z++){
-                        System.out.println("x: "+x +" y: "+y+" z: "+z+" i: "+i);
                         if(this.stack[y][x][z]!= null)empty = false; 
                         this.stack[i][x][z] = this.stack[y][x][z];
                      
@@ -161,7 +179,6 @@ public class TetrisGame {
                for(int z = 0; z<6; z++){
                    
                    if(this.stack[y][x][z] != null){
-                       System.out.println("x "+x+" y "+y+" z "+z);
                        Mesh mesh = new Mesh();
                        mesh.copy(cube);
                        int i = 0;
@@ -180,8 +197,6 @@ public class TetrisGame {
 
                             if (condition) {
                                 iterator.remove(); //removes non visible faces
-                                System.out.println("face removed");
-                                System.out.println(i);
                             }
                             i++;
                         }
@@ -354,6 +369,19 @@ public class TetrisGame {
     //moves the piece down (soft drop)
     public void softDrop(){
         if(collide(this.movingPiece.getMovedPosition(0, -1, 0)))this.movingPiece.moveDown();
+    }
+    
+    //hold piece
+    public void holdPiece(){
+        if(this.saved == null){
+            this.saved = this.movingPiece.type;
+            generateNewPiece();
+        }else{
+            Tetrominoes temp = this.movingPiece.type;
+            generateNewPiece(this.saved);
+            this.saved = temp;
+        }
+        this.sgame.updatePieces();
     }
     
 }
