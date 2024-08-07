@@ -27,6 +27,7 @@ public class TetrisGame {
     Piece shadowPiece;
     private int delay;
     private int level;
+    private int score;
     private Color [][][] stack; 
     private ArrayList<ArrayList<Mesh>> scene;
     
@@ -108,12 +109,22 @@ public class TetrisGame {
     
     //checks the affected planes and clears if the plane is completed
     private void checkCompleteLines(int min, int max){
-        int clearedLines = 0;
         for(int y = min;y<=max;y++){
             if(isComplete(y)){
-                clearedLines++;
                 clearLines(y);
+                Scoring(clearLines(y));                
+                break;
             }
+        }
+    }    
+    private void Scoring(int clearedLines){
+        switch (clearedLines){
+            case 1:
+                score += 220;
+            case 2:
+                score += 550;
+            case 3:
+                score += 1000;
         }
     }    
     
