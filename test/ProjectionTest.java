@@ -25,11 +25,11 @@ public class ProjectionTest {
        Controls controls = new Controls(tgame);
        Window window = new Window(controls);
         
-       p.cameraVec = Engine.matrixMulti(Engine.translationMatrix(0, 27, -27), p.cameraVec);
-       p.lookVec = Engine.matrixMulti(Engine.rotationMatrix(35f, 0, 0), p.lookVec);
+       p.cameraVec = Engine.matrixMulti(Engine.translationMatrix(-10, 28, -25), p.cameraVec);
+       p.lookVec = Engine.matrixMulti(Engine.rotationMatrix(37f, 22, 0), p.lookVec);
         
         
-        UpdateWindow update = new UpdateWindow(p,window,scene,screen,screenGame);
+        UpdateWindow update = new UpdateWindow(p,window,scene,screen,screenGame,tgame);
         Thread updateThread = new Thread(update);
         updateThread.start();
 

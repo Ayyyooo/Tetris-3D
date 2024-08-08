@@ -50,17 +50,17 @@ public class Controls implements KeyListener, MouseListener, MouseMotionListener
     public void keyPressed(KeyEvent e) {
         //throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         switch (e.getKeyCode()){
-            case KeyEvent.VK_W: //(W) clockwise rotatation in the y axis
-                game.rotateLeftY();
+            case KeyEvent.VK_W: //(W) clockwise rotatation in the z axis
+                game.rotateRightZ(); 
                 break;
-            case KeyEvent.VK_A: //(A) clockwise rotatation in the z axis
+            case KeyEvent.VK_A: //(A) clockwise rotatation in the y axis
+                game.rotateRightY();
+                break;
+            case KeyEvent.VK_S: //(S) counterclockwise rotation in the z axis
                 game.rotateLeftZ(); 
                 break;
-            case KeyEvent.VK_S: //(S) counterclockwise rotation in the y axis
-                game.rotateRightY(); 
-                break;
-            case KeyEvent.VK_D: //(D) counterclockwise rotatation in the z axis
-                game.rotateRightZ(); 
+            case KeyEvent.VK_D: //(D) counterclockwise rotatation in the y axis
+                game.rotateLeftY();
                 break;
             case KeyEvent.VK_UP: //(ARROW UP) moves forward z+
                 game.moveForward();
@@ -84,10 +84,10 @@ public class Controls implements KeyListener, MouseListener, MouseMotionListener
                 game.holdPiece();
                 break;
             case KeyEvent.VK_Q: //(Q) clockwise rotation view 90 degrees 
-                
+                game.rotateBoard(90);
                 break;
             case KeyEvent.VK_E: //(E) counterclockwise rotation view 90 degrees 
-                
+                game.rotateBoard(-90);
                 break;
             
         }
