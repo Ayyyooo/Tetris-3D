@@ -141,7 +141,7 @@ public class TetrisGame {
     private void checkCompleteLines(int min, int max){
         for(int y = min;y<=max;y++){
             if(isComplete(y)){
-                Scoring(clearLines(y));                
+                Scoring(clearLines(y)); 
                 break;
             }
         }
@@ -155,6 +155,7 @@ public class TetrisGame {
             case 3:
                 score += 1000;
         }
+    
     }    
     
     private int clearLines(int y){
