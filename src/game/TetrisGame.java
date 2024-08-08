@@ -32,6 +32,8 @@ public class TetrisGame {
     public final LinkedList<Tetrominoes> next;
     public Tetrominoes saved;
     private ScreenGame sgame;
+    private int score;
+
     
     public TetrisGame(ArrayList<ArrayList<Mesh>> scene, ScreenGame sgame){
         this.level = 0;
@@ -127,16 +129,26 @@ public class TetrisGame {
     
     //checks the affected planes and clears if the plane is completed
     private void checkCompleteLines(int min, int max){
-        int clearedLines = 0;
         for(int y = min;y<=max;y++){
             if(isComplete(y)){
-                clearedLines++;
-                clearLines(y);
+                Scoring(clearLines(y));                
+                break;
             }
         }
     }    
+    private void Scoring(int clearedLines){
+        switch (clearedLines){
+            case 1:
+                score += 220;
+            case 2:
+                score += 550;
+            case 3:
+                score += 1000;
+        }
+    }    
     
-    private void clearLines(int y){
+    private int clearLines(int y){
+        int clearedLines = 0;
         int i = y;
         while(y<15 && i<15){
             y++;
@@ -151,9 +163,10 @@ public class TetrisGame {
                     }   
                 }
                 i++;
-            }
+            }else clearedLines++;
             if(empty)break;
         }
+        return clearedLines;
     }
     
     private boolean isComplete(int y){
