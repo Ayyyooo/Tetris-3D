@@ -11,6 +11,7 @@ import engine.elements.Vector;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
@@ -33,7 +34,9 @@ public class TetrisGame {
     public Tetrominoes saved;
     private ScreenGame sgame;
     private int score;
-
+    public float boardAngle;
+    public float lastBoardAngle;
+    private HashMap<Float,Vector[]> movements;
     
     public TetrisGame(ArrayList<ArrayList<Mesh>> scene, ScreenGame sgame){
         this.level = 0;
@@ -42,6 +45,13 @@ public class TetrisGame {
         this.next = new LinkedList<>();
         this.saved = null;
         this.sgame = sgame;
+        this.boardAngle =0;
+        this.lastBoardAngle =0;
+        this.movements = new HashMap<>();
+        this.movements.put(0f, new Vector[]{new Vector(0,0,1),new Vector(0,0,-1),new Vector(-1,0,0),new Vector(1,0,0)});//forward, backward,left,right
+        this.movements.put(90f, new Vector[]{new Vector(-1,0,0),new Vector(1,0,0),new Vector(0,0,-1),new Vector(0,0,1)});
+        this.movements.put(180f, new Vector[]{new Vector(0,0,-1),new Vector(0,0,1),new Vector(1,0,0),new Vector(-1,0,0)});
+        this.movements.put(270f, new Vector[]{new Vector(1,0,0),new Vector(-1,0,0),new Vector(0,0,1),new Vector(0,0,-1)});
         sgame.setTetrisGame(this);
         startGame();
         this.timer = new Timer(delay, (ActionEvent e) -> {
@@ -229,9 +239,9 @@ public class TetrisGame {
     }
     
     //moves shadow to the bottom hit
-    private void moveShadowDown(){  //wrong  
-        while(collide(this.shadowPiece.getMovedPosition(0, -1, 0))){
-            this.shadowPiece.moveDown();
+    private void moveShadowDown(){
+        while(collide(this.shadowPiece.getMovedPosition(new Vector(0,-1,0)))){
+            this.shadowPiece.move(new Vector(0,-1,0));
         }
     }
     
@@ -261,15 +271,30 @@ public class TetrisGame {
     }
     
     private void movePieceDown(){
-        if(collide(this.movingPiece.getMovedPosition(0, -1, 0)))this.movingPiece.moveDown();
+        if(collide(this.movingPiece.getMovedPosition(new Vector(0,-1,0))))this.movingPiece.move(new Vector(0,-1,0));
         else{
             //update the scene, stack, create new piece.
             bottomHit();
         }
     }
     
-    //rotation, moving methods
+    //rotates the board
+    public void rotateBoard(float angle){
+        this.boardAngle +=angle;
+        if(this.boardAngle >270){
+            this.boardAngle = 0;
+            this.lastBoardAngle = -90;
+        }
+        
+        if(this.boardAngle <0){ 
+            this.boardAngle = 270;
+            this.lastBoardAngle = 360;
+        }
+        System.out.println(this.boardAngle);
+    }
     
+    //rotation, moving methods
+
     public void rotateRightY(){
         if(collide(this.movingPiece.getRotatedPosition(0, 90, 0))){
             moveShadowBack();
@@ -319,37 +344,37 @@ public class TetrisGame {
     }
     
     public void moveLeft(){
-        if(collide(this.movingPiece.getMovedPosition(-1, 0, 0))){
+        if(collide(this.movingPiece.getMovedPosition(this.movements.get(this.boardAngle)[2]))){
             moveShadowBack();
-            this.movingPiece.moveLeft();
-            this.shadowPiece.moveLeft();
+            this.movingPiece.move(this.movements.get(this.boardAngle)[2]);
+            this.shadowPiece.move(this.movements.get(this.boardAngle)[2]);
             moveShadowDown();
         }
     }
     
     public void moveRight(){
-        if(collide(this.movingPiece.getMovedPosition(1, 0, 0))){
+        if(collide(this.movingPiece.getMovedPosition(this.movements.get(this.boardAngle)[3]))){
             moveShadowBack();
-            this.movingPiece.moveRight();
-            this.shadowPiece.moveRight();
+            this.movingPiece.move(this.movements.get(this.boardAngle)[3]);
+            this.shadowPiece.move(this.movements.get(this.boardAngle)[3]);
             moveShadowDown();
         }
     }
     
     public void moveForward(){
-        if(collide(this.movingPiece.getMovedPosition(0, 0, 1))){
+        if(collide(this.movingPiece.getMovedPosition(this.movements.get(this.boardAngle)[0]))){
             moveShadowBack();
-            this.movingPiece.moveForward();
-            this.shadowPiece.moveForward();
+            this.movingPiece.move(this.movements.get(this.boardAngle)[0]);
+            this.shadowPiece.move(this.movements.get(this.boardAngle)[0]);
             moveShadowDown();
         }
     }
       
     public void moveBackward(){
-        if(collide(this.movingPiece.getMovedPosition(0, 0, -1))){
+        if(collide(this.movingPiece.getMovedPosition(this.movements.get(this.boardAngle)[1]))){
             moveShadowBack();
-            this.movingPiece.moveBackward();
-            this.shadowPiece.moveBackward();
+            this.movingPiece.move(this.movements.get(this.boardAngle)[1]);
+            this.shadowPiece.move(this.movements.get(this.boardAngle)[1]);
             moveShadowDown();
         }
     }
@@ -381,7 +406,7 @@ public class TetrisGame {
     
     //moves the piece down (soft drop)
     public void softDrop(){
-        if(collide(this.movingPiece.getMovedPosition(0, -1, 0)))this.movingPiece.moveDown();
+        if(collide(this.movingPiece.getMovedPosition(new Vector(0,-1,0))))this.movingPiece.move(new Vector(0,-1,0));
     }
     
     //hold piece

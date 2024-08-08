@@ -76,11 +76,11 @@ public class Piece {
                 mesh.applyTrans(Engine.translationMatrix(0,16,0)); //translates each cube to its postition
                 this.blocks.add(mesh);
                 this.positions.add(Vector.vectorAdd(center, new Vector(0,16,0)));
-                Mesh mesh1 = new Mesh();
-                mesh1.copy(cube);
-                mesh1.applyTrans(Engine.translationMatrix(0,15,-1)); //translates each cube to its postition
-                this.blocks.add(mesh1);
-                this.positions.add(Vector.vectorAdd(center, new Vector(0,15,-1)));
+//                Mesh mesh1 = new Mesh();
+//                mesh1.copy(cube);
+//                mesh1.applyTrans(Engine.translationMatrix(0,15,-1)); //translates each cube to its postition
+//                this.blocks.add(mesh1);
+//                this.positions.add(Vector.vectorAdd(center, new Vector(0,15,-1)));
             }
             case SQUARE -> { // creates a square "o"
                 //translate offset (0,0,0)
@@ -269,26 +269,17 @@ public class Piece {
         }
     }
     
-    //Moves positive Z axis 
-    public void moveForward(){
-        move(0,0,1);
-    }
-    //Moves negative Z axis
-    public void moveBackward(){
-        move(0,0,-1);
-    }
-    //Moves positive X axis
-    public void moveRight(){
-        move(1,0,0);
-    }
-    //Moves negative Z axis
-    public void moveLeft(){
-        move(-1,0,0);
-    }
-    
-    //Moves negative y axis
-    public void moveDown(){
-        move(0,-1,0);
+    public void move(Vector vect){
+        this.position.setZ(this.position.getZ()+vect.getZ());
+        this.position.setY(this.position.getY()+vect.getY());
+        this.position.setX(this.position.getX()+vect.getX());
+        float [][] transMatrix = Engine.translationMatrix(vect.getX(),vect.getY(),vect.getZ());
+         for(int i =0; i<this.blocks.size();i++){
+            this.blocks.get(i).applyProjection(transMatrix);
+            this.positions.get(i).setX(vect.getX()+this.positions.get(i).getX());
+            this.positions.get(i).setY(vect.getY()+this.positions.get(i).getY());
+            this.positions.get(i).setZ(vect.getZ()+this.positions.get(i).getZ());  
+        }
     }
     
     //gets a copy of position but rotated in one axis
@@ -313,17 +304,16 @@ public class Piece {
         return copyPosition;
     }
     
-    //gets a copy of position but moved in one axis
-    public ArrayList<Vector> getMovedPosition(float x, float y, float z){
+    public ArrayList<Vector> getMovedPosition(Vector vector){
         ArrayList<Vector> copyPosition = new ArrayList<>(); 
         for(Vector v: this.positions){
             copyPosition.add(new Vector(v.getX(),v.getY(), v.getZ()));
         }
         
         for(Vector v: copyPosition){
-            v.setX(x+v.getX());
-            v.setY(y+v.getY());
-            v.setZ(z+v.getZ());  
+            v.setX(vector.getX()+v.getX());
+            v.setY(vector.getY()+v.getY());
+            v.setZ(vector.getZ()+v.getZ());  
         }
         
         return copyPosition;

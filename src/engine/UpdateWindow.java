@@ -7,6 +7,7 @@ import engine.elements.Light;
 import engine.elements.Mesh;
 import engine.elements.Vector;
 import game.ScreenGame;
+import game.TetrisGame;
 import java.util.ArrayList;
 /**
  *
@@ -18,8 +19,9 @@ public class UpdateWindow implements Runnable{
     private final ArrayList<ArrayList<Mesh>> scene; // multidimensional array of mesh each array of mesh represent a game object 
     private final ArrayList<ArrayList<Mesh>> screenElements; // multidimensional array of mesh each array of mesh represent a screen object
     private int w,h; 
-    private ScreenGame screenG;
-    public UpdateWindow(Engine engine, Window window, ArrayList<ArrayList<Mesh>> scene, ArrayList<ArrayList<Mesh>> screenElements, ScreenGame screenG){
+    private final ScreenGame screenG;
+    private final TetrisGame tetrisG;
+    public UpdateWindow(Engine engine, Window window, ArrayList<ArrayList<Mesh>> scene, ArrayList<ArrayList<Mesh>> screenElements, ScreenGame screenG, TetrisGame tetrisG){
         this.engine = engine;
         this.window = window;
         this.w = window.getWidth();
@@ -27,6 +29,7 @@ public class UpdateWindow implements Runnable{
         this.scene = scene;
         this.screenElements = screenElements;
         this.screenG = screenG;
+        this.tetrisG = tetrisG;
     }
     @Override
     public void run(){
@@ -46,7 +49,6 @@ public class UpdateWindow implements Runnable{
             //render screen
             render.renderFrame(projectedScreen);
             this.window.update(render.getFrame());
-            yAngle += 0.4f; //Temporary
 
             try {
                 Thread.sleep(16);  // Control animation speed
@@ -56,7 +58,6 @@ public class UpdateWindow implements Runnable{
         }
     }
     
-    float yAngle = 0; //Temporary
     private ArrayList<Mesh> projectScene(){
     ArrayList<Mesh> projected = new ArrayList<>();
         for(ArrayList<Mesh> gameObj: scene){
@@ -64,8 +65,18 @@ public class UpdateWindow implements Runnable{
                 Mesh projectedScene = new Mesh();
                 projectedScene.copy(element);
                 
-                //rotation Temporary
-                projectedScene.applyTrans(Engine.rotationMatrix(0, yAngle,0));
+                if(this.tetrisG.lastBoardAngle<this.tetrisG.boardAngle){
+                    //rotation 
+                    projectedScene.applyTrans(Engine.rotationMatrix(0, this.tetrisG.lastBoardAngle,0));
+                    this.tetrisG.lastBoardAngle +=2;
+                }
+                else if(this.tetrisG.lastBoardAngle>this.tetrisG.boardAngle){
+                    //rotation 
+                    projectedScene.applyTrans(Engine.rotationMatrix(0, this.tetrisG.lastBoardAngle,0));
+                    this.tetrisG.lastBoardAngle -=2;
+                }else{
+                    projectedScene.applyTrans(Engine.rotationMatrix(0, this.tetrisG.boardAngle,0));
+                }
                 
                 //camera matrix
                 projectedScene.applyTrans(engine.matrixFrom());
@@ -90,7 +101,6 @@ public class UpdateWindow implements Runnable{
         }
             return projected;
     }
-
     
     private ArrayList<Mesh> projectScreen(){
         screenG.updateScreen();
