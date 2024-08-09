@@ -57,7 +57,7 @@ public class TetrisGame {
         this.timer = new Timer(delay, (ActionEvent e) -> {
             movePieceDown();
         });
-        this.timer.start();
+        
     }
     
     private void startGame(){
@@ -80,6 +80,10 @@ public class TetrisGame {
         ArrayList<Mesh> stackMeshes = new ArrayList<>();
         this.scene.set(3,stackMeshes); // index 3 Stack
         this.sgame.createPieces();
+    }
+    
+    public void startTimer(){
+        this.timer.start();
     }
     
     private void generateNewPiece(){
@@ -148,22 +152,11 @@ public class TetrisGame {
     }    
     private void Scoring(int clearedLines){
         switch (clearedLines){
-<<<<<<< HEAD
             case 1 -> score += 220;
             case 2 -> score += 550;
             case 3 -> score += 1000;
-}
-        System.out.println("this.score = " + this.score);
-=======
-            case 1:
-                score += 220;
-            case 2:
-                score += 550;
-            case 3:
-                score += 1000;
         }
-    
->>>>>>> origin/main
+        System.out.println("this.score = " + this.score);
     }    
     
     private int clearLines(int y){
