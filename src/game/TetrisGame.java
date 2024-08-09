@@ -141,18 +141,29 @@ public class TetrisGame {
     private void checkCompleteLines(int min, int max){
         for(int y = min;y<=max;y++){
             if(isComplete(y)){
-                Scoring(clearLines(y));                
+                Scoring(clearLines(y)); 
                 break;
             }
         }
     }    
     private void Scoring(int clearedLines){
         switch (clearedLines){
+<<<<<<< HEAD
             case 1 -> score += 220;
             case 2 -> score += 550;
             case 3 -> score += 1000;
 }
         System.out.println("this.score = " + this.score);
+=======
+            case 1:
+                score += 220;
+            case 2:
+                score += 550;
+            case 3:
+                score += 1000;
+        }
+    
+>>>>>>> origin/main
     }    
     
     private int clearLines(int y){
