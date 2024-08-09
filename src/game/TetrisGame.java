@@ -148,20 +148,18 @@ public class TetrisGame {
     }    
     private void Scoring(int clearedLines){
         switch (clearedLines){
-            case 1:
-                score += 220;
-            case 2:
-                score += 550;
-            case 3:
-                score += 1000;
-        }
+            case 1 -> score += 220;
+            case 2 -> score += 550;
+            case 3 -> score += 1000;
+}
+        System.out.println("this.score = " + this.score);
     }    
     
     private int clearLines(int y){
-        int clearedLines = 0;
+        int clearedLines = 1;
         int i = y;
+        y++;
         while(y<15 && i<15){
-            y++;
             boolean empty = false;
             if(!isComplete(y)){
                 empty = true;
@@ -173,8 +171,10 @@ public class TetrisGame {
                     }   
                 }
                 i++;
-            }else clearedLines++;
+            }else{
+                clearedLines++;}
             if(empty)break;
+            y++;
         }
         return clearedLines;
     }
@@ -290,7 +290,6 @@ public class TetrisGame {
             this.boardAngle = 270;
             this.lastBoardAngle = 360;
         }
-        System.out.println(this.boardAngle);
     }
     
     //rotation, moving methods
