@@ -60,6 +60,7 @@ public class UpdateWindow implements Runnable{
     
     private ArrayList<Mesh> projectScene(){
     ArrayList<Mesh> projected = new ArrayList<>();
+    Light light = new Light(new Vector(-1,0,-1), 0.3f);
         for(ArrayList<Mesh> gameObj: scene){
             for(Mesh element: gameObj){
                 Mesh projectedScene = new Mesh();
@@ -88,8 +89,6 @@ public class UpdateWindow implements Runnable{
 
                     //clipps triangles in scene
                     //engine.clipTrianglesAgainstPlane(projectedScene);
-                    
-                    Light light = new Light(new Vector(0,0,-1), 0.3f);
                     Light.applyLLighting(projectedScene, light);
                 }
                 
@@ -104,6 +103,7 @@ public class UpdateWindow implements Runnable{
     
     private ArrayList<Mesh> projectScreen(){
         screenG.updateScreen();
+        Light light = new Light(engine.cameraVec, 0.3f);
         ArrayList<Mesh> projected = new ArrayList<>();
             for(ArrayList<Mesh> screenObj: screenElements){
                 if(screenObj == null) continue;
@@ -119,7 +119,7 @@ public class UpdateWindow implements Runnable{
                         //clipps triangles in scene
                         engine.clipTrianglesAgainstPlane(projectedScreen);
 
-                        Light light = new Light(engine.cameraVec, 0.3f);
+                        
                         Light.applyLLighting(projectedScreen, light);
                     }
 

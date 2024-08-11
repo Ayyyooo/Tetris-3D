@@ -43,17 +43,16 @@ public class Piece {
         String path = "src/objfiles/cube.obj";
         ObjFileLoader.loadFile(cube, path);
         switch(this.type){
-            case TEST-> {
-                  Mesh mesh = new Mesh();
-                  mesh.copy(cube);
-                mesh.applyTrans(Engine.translationMatrix(0, 15, 0));
-                this.blocks.add(mesh);
-                this.positions.add(Vector.vectorAdd(center, new Vector(0,15,0)));
-                if(!isTransparent) this.color = new Color(120, 120, 120);
-            }
+//            case TEST-> {
+//                  Mesh mesh = new Mesh();
+//                  mesh.copy(cube);
+//                mesh.applyTrans(Engine.translationMatrix(0, 15, 0));
+//                this.blocks.add(mesh);
+//                this.positions.add(Vector.vectorAdd(center, new Vector(0,15,0)));
+//                if(!isTransparent) this.color = new Color(120, 120, 120);
+//            }
             case STRAIGHT -> { //creates a straight "l"
-                //translate offset (-1.5,-0.5,-0.5)
-                if(!isTransparent) this.color = new Color(1, 255, 244);
+                if(!isTransparent) this.color = new Color(4, 217, 255);
                 for(int i = 0;i<3;i++){ 
                     Mesh mesh = new Mesh();
                     mesh.copy(cube);
@@ -63,7 +62,7 @@ public class Piece {
                 }
             }
             case J -> { //creates a J
-                if(!isTransparent) this.color = new Color(124, 255, 1);
+                if(!isTransparent) this.color = new Color(57, 255, 20);
                 for(int i = 0;i<3;i++){ 
                     Mesh mesh = new Mesh();
                     mesh.copy(cube);
@@ -83,20 +82,18 @@ public class Piece {
 //                this.positions.add(Vector.vectorAdd(center, new Vector(0,15,-1)));
             }
             case SQUARE -> { // creates a square "o"
-                //translate offset (0,0,0)
-                if(!isTransparent) this.color = new Color(255, 242, 5);
+                if(!isTransparent) this.color = new Color(255, 240, 31);
                 for(int i =0; i<2;i++){
                     for(int j =0; j<2;j++){
                             Mesh mesh = new Mesh();
                             mesh.copy(cube);
-                            mesh.applyTrans(Engine.translationMatrix(0,i+15,j)); //translates each cube to its postition
-                            this.positions.add(Vector.vectorAdd(center, new Vector(0,i+15,j)));
+                            mesh.applyTrans(Engine.translationMatrix(i,j+15,0)); //translates each cube to its postition
+                            this.positions.add(Vector.vectorAdd(center, new Vector(i,j+15,0)));
                             this.blocks.add(mesh);
                     }
                 }
             }
             case SKEW -> { // creates a skew "z"
-                //translate offset (-1.5,-0.5,-0.5)
                 if(!isTransparent) this.color = new Color(254, 0, 0);
                 for(int i =0; i<4;i++){
                     Mesh mesh = new Mesh();
@@ -113,7 +110,6 @@ public class Piece {
                 this.positions.add(Vector.vectorAdd(center, new Vector(2,15,0)));
             }
             case T -> { // creates a T
-                //translate offset (-1.5,-0.5,-0.5)
                 if(!isTransparent) this.color = new Color(255, 17, 123);
                 for(int i =0; i<4;i++){
                     Mesh mesh = new Mesh();
@@ -128,6 +124,20 @@ public class Piece {
                 this.positions.add(Vector.vectorAdd(center, new Vector(2,15,0)));
                 this.blocks.get(3).applyTrans(Engine.translationMatrix(1,16,0));
                 this.positions.add(Vector.vectorAdd(center, new Vector(1,16,0)));
+            }
+            case L -> {
+                if(!isTransparent) this.color = new Color(188, 19, 254);
+                for(int i = 0;i<3;i++){ 
+                    Mesh mesh = new Mesh();
+                    mesh.copy(cube);
+                    this.blocks.add(mesh);
+                }
+                this.blocks.get(0).applyTrans(Engine.translationMatrix(0,15,0));
+                this.positions.add(Vector.vectorAdd(center, new Vector(0,15,0)));
+                this.blocks.get(1).applyTrans(Engine.translationMatrix(1,15,0));
+                this.positions.add(Vector.vectorAdd(center, new Vector(1,15,0)));
+                this.blocks.get(2).applyTrans(Engine.translationMatrix(0,15,1));
+                this.positions.add(Vector.vectorAdd(center, new Vector(0,15,1)));
             }
 
         }
@@ -179,7 +189,6 @@ public class Piece {
     }
     
     private void moveToOrigin(Vector offset){
-        //translate offset (-1.5,-0.5,-0.5) to ceneter the rotating point
         Vector originOffset = Vector.vectorSub(offset,this.position);
         for(Mesh block: this.blocks){
             block.applyTrans(Engine.translationMatrix(originOffset));

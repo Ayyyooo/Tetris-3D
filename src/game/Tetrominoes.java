@@ -9,10 +9,11 @@ package game;
  * @author josja
  */
 public enum Tetrominoes {
-    TEST,
+    //TEST,
     STRAIGHT,
     J,
     SQUARE,
     SKEW,
-    T; 
+    T,
+    L; 
 }

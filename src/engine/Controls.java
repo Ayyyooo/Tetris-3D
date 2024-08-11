@@ -84,10 +84,10 @@ public class Controls implements KeyListener, MouseListener, MouseMotionListener
                 game.holdPiece();
                 break;
             case KeyEvent.VK_Q: //(Q) clockwise rotation view 90 degrees 
-                game.rotateBoard(90);
+                game.rotateBoard(-90);
                 break;
             case KeyEvent.VK_E: //(E) counterclockwise rotation view 90 degrees 
-                game.rotateBoard(-90);
+                game.rotateBoard(90);
                 break;
             
         }
