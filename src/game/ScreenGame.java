@@ -19,11 +19,11 @@ import java.util.ListIterator;
  */
 public class ScreenGame {
 
-    private ArrayList<ArrayList<Mesh>> screen;
+    private final ArrayList<ArrayList<Mesh>> screen;
     private TetrisGame tgame;
     private Piece heldPiece;
-    private LinkedList<Piece> next;
-    private Vector offset;
+    private final LinkedList<Piece> next;
+    private final Vector offset;
 
     public ScreenGame(ArrayList<ArrayList<Mesh>> screen) {
         this.screen = screen;
