@@ -37,6 +37,7 @@ public class TetrisGame {
     public float boardAngle;
     public float lastBoardAngle;
     private HashMap<Float,Vector[]> movements;
+    private final Random random;
     
     public TetrisGame(ArrayList<ArrayList<Mesh>> scene, ScreenGame sgame){
         this.level = 0;
@@ -47,6 +48,7 @@ public class TetrisGame {
         this.sgame = sgame;
         this.boardAngle =0;
         this.lastBoardAngle =0;
+        this.random = new Random();
         this.movements = new HashMap<>();
         this.movements.put(0f, new Vector[]{new Vector(0,0,1),new Vector(0,0,-1),new Vector(-1,0,0),new Vector(1,0,0)});//forward, backward,left,right
         this.movements.put(90f, new Vector[]{new Vector(-1,0,0),new Vector(1,0,0),new Vector(0,0,-1),new Vector(0,0,1)});
@@ -86,11 +88,15 @@ public class TetrisGame {
         this.timer.start();
     }
     
+    private void endGame(){
+        System.out.println("game ended, score: "+score);
+    }
+    
     private void generateNewPiece(){
         movingPiece = new Piece(this.next.pop(),false);
-        this.next.add(Tetrominoes.values()[(new Random()).nextInt(Tetrominoes.values().length)]);
         shadowPiece = new Piece(this.movingPiece.type,true);
         moveShadowDown();
+        this.next.add(Tetrominoes.values()[random.nextInt(Tetrominoes.values().length)]); //adds new piece to the stack
         this.scene.set(0,movingPiece.blocks); //index 0 moving piece
         this.scene.set(1,shadowPiece.blocks); //index 1 shadow piece
         this.sgame.updatePieces();
@@ -132,6 +138,10 @@ public class TetrisGame {
             int x = ((int)Math.floor(block.getX()))+3;
             int y = (int)Math.floor(block.getY());
             int z = ((int)Math.floor(block.getZ()))+3;
+            if(y>14){
+            endGame();
+            return;
+            }
             minY = Math.min(y, minY);
             maxY = Math.max(y, maxY);
             this.stack[y][x][z] = color;
