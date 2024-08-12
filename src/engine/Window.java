@@ -24,6 +24,7 @@ public class Window extends JPanel{
     private BufferedImage frame;
     private final Set<Integer> pressedKeys = new HashSet<>();
     Controls controls;
+    Soundtracks menuMusic = new Soundtracks();
     
     public Window(Controls controls){
         setFocusable(true);
@@ -33,6 +34,8 @@ public class Window extends JPanel{
         jframe.add(this);
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.setVisible(true);
+        menuMusic.reproduceMenuAudio("src/game/music/Tetris-3D.wav");
+        
         this.controls = controls;
     }
     
