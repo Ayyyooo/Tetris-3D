@@ -66,8 +66,7 @@ public class TetrisGame {
     
     private void startGame(){
         calculateDelay(); //calculates delay
-        for(int i= 0; i<4;i++)this.scene.add(new ArrayList<>());// adds an array list to scene
-        Random random = new Random(); 
+        for(int i= 0; i<4;i++)this.scene.add(new ArrayList<>());// adds an array list to scene 
         for (int i = 0; i < 4; i++) {
             int randomIndex = random.nextInt(Tetrominoes.values().length); // Generate random index
             this.next.add(Tetrominoes.values()[randomIndex]); // Add corresponding Tetrominoes value
@@ -176,20 +175,16 @@ public class TetrisGame {
         int i = y;
         y++;
         while(y<15 && i<15){
-            boolean empty = false;
+            
             if(!isComplete(y)){
-                empty = true;
                 for(int x = 0; x<6;x++){
                     for(int z = 0; z<6;z++){
-                        if(this.stack[y][x][z]!= null)empty = false; 
                         this.stack[i][x][z] = this.stack[y][x][z];
-                     
                     }   
                 }
                 i++;
             }else{
                 clearedLines++;}
-            if(empty)break;
             y++;
         }
         return clearedLines;
