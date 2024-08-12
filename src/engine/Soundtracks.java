@@ -20,14 +20,11 @@ public class Soundtracks {
     
        private Clip clip;
        public void reproduceMenuAudio(String rutaArchivo) {
-        try {
-            // Abrir el archivo de audio como un stream de entrada
+        try {            
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(rutaArchivo));
 
-            // Obtener un clip de sonido
             clip = AudioSystem.getClip();
 
-            // Abrir el clip con el stream de audio
             clip.open(audioStream);
             clip.loop(Clip.LOOP_CONTINUOUSLY);
             clip.start();

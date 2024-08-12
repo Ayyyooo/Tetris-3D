@@ -162,8 +162,8 @@ public class TetrisGame {
     }    
     private void Scoring(int clearedLines){
         switch (clearedLines){
-            case 1 -> score += 220;
-            case 2 -> score += 550;
+            case 1 -> score += 227;
+            case 2 -> score += 756;
             case 3 -> score += 1000;
         }
         System.out.println("this.score = " + this.score);
