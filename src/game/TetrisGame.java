@@ -38,6 +38,7 @@ public class TetrisGame {
     public float lastBoardAngle;
     private HashMap<Float,Vector[]> movements;
     private final Random random;
+    private final Vector[] wallkicks;
     
     public TetrisGame(ArrayList<ArrayList<Mesh>> scene, ScreenGame sgame){
         this.level = 0;
@@ -54,6 +55,7 @@ public class TetrisGame {
         this.movements.put(90f, new Vector[]{new Vector(-1,0,0),new Vector(1,0,0),new Vector(0,0,-1),new Vector(0,0,1)});
         this.movements.put(180f, new Vector[]{new Vector(0,0,-1),new Vector(0,0,1),new Vector(1,0,0),new Vector(-1,0,0)});
         this.movements.put(270f, new Vector[]{new Vector(1,0,0),new Vector(-1,0,0),new Vector(0,0,1),new Vector(0,0,-1)});
+        this.wallkicks = new Vector []{new Vector(1, 0, 0), new Vector(-1, 0, 0), new Vector(0, 0, 1), new Vector(0, 0, -1), new Vector(1, 0, 1), new Vector(-1, 0, -1), new Vector(1, -1, 0), new Vector(-1, -1, 0), new Vector(0, -1, 1), new Vector(0, -1, -1), new Vector(1, -1, 1), new Vector(-1, -1, -1), new Vector(0, 2, 0), new Vector(1, 2, 0), new Vector(-1, 2, 0), new Vector(0, 2, 1), new Vector(0, 2, -1), new Vector(1, 2, 1), new Vector(-1, 2, -1)};
         sgame.setTetrisGame(this);
         startGame();
         this.timer = new Timer(delay, (ActionEvent e) -> {
@@ -64,8 +66,7 @@ public class TetrisGame {
     
     private void startGame(){
         calculateDelay(); //calculates delay
-        for(int i= 0; i<4;i++)this.scene.add(new ArrayList<>());// adds an array list to scene
-        Random random = new Random(); 
+        for(int i= 0; i<4;i++)this.scene.add(new ArrayList<>());// adds an array list to scene 
         for (int i = 0; i < 4; i++) {
             int randomIndex = random.nextInt(Tetrominoes.values().length); // Generate random index
             this.next.add(Tetrominoes.values()[randomIndex]); // Add corresponding Tetrominoes value
@@ -174,20 +175,16 @@ public class TetrisGame {
         int i = y;
         y++;
         while(y<15 && i<15){
-            boolean empty = false;
+            
             if(!isComplete(y)){
-                empty = true;
                 for(int x = 0; x<6;x++){
                     for(int z = 0; z<6;z++){
-                        if(this.stack[y][x][z]!= null)empty = false; 
                         this.stack[i][x][z] = this.stack[y][x][z];
-                     
                     }   
                 }
                 i++;
             }else{
                 clearedLines++;}
-            if(empty)break;
             y++;
         }
         return clearedLines;
@@ -306,53 +303,105 @@ public class TetrisGame {
         }
     }
     
-    //rotation, moving methods
-
+    /*
+    rotation, 
+    moving 
+    methods
+    */
+    
+    //test translations if piece can't rotate
+    private Vector wallkicks(ArrayList<Vector> position){
+        for(Vector testPosition: this.wallkicks){
+            if(collide(Piece.getMovedPosition(testPosition, position)))return testPosition;
+        }
+        return null;
+    }
+    
     public void rotateRightY(){
-        if(collide(this.movingPiece.getRotatedPosition(0, 90, 0))){
+        ArrayList<Vector> rotated = this.movingPiece.getRotatedPosition(0, 90, 0);
+        if(collide(rotated)){
             moveShadowBack();
             this.movingPiece.rotateRightY();
             this.shadowPiece.rotateRightY();
             moveShadowDown();
         }
         else{
-            //wallkicks
+            Vector translation = wallkicks(rotated);
+            System.out.println("translation = " + translation);
+            if(translation != null){
+                moveShadowBack();
+                    this.movingPiece.rotateRightY();
+                    this.movingPiece.move(translation);
+                    this.shadowPiece.rotateRightY();
+                    this.shadowPiece.move(translation);
+                moveShadowDown();
+            }
         }
     }
     
     public void rotateRightZ(){
-        if(collide(this.movingPiece.getRotatedPosition(0, 0, 90))){
+        ArrayList<Vector> rotated = this.movingPiece.getRotatedPosition(0, 0, 90);
+        if(collide(rotated)){
             moveShadowBack();
             this.movingPiece.rotateRightZ();
             this.shadowPiece.rotateRightZ();
             moveShadowDown();
         }
         else{
-            //wallkicks
+            Vector translation = wallkicks(rotated);
+            System.out.println("translation = " + translation);
+            if(translation != null){
+                moveShadowBack();
+                    this.movingPiece.rotateRightZ();
+                    this.movingPiece.move(translation);
+                    this.shadowPiece.rotateRightZ();
+                    this.shadowPiece.move(translation);
+                moveShadowDown();
+            }
         }
     }
     
     public void rotateLeftY(){
-        if(collide(this.movingPiece.getRotatedPosition(0, -90, 0))){
+        ArrayList<Vector> rotated = this.movingPiece.getRotatedPosition(0, -90, 0);
+        if(collide(rotated)){
             moveShadowBack();
             this.movingPiece.rotateLeftY();
             this.shadowPiece.rotateLeftY();
             moveShadowDown();
         }
         else{
-            //wallkicks
+            Vector translation = wallkicks(rotated);
+            System.out.println("translation = " + translation);
+            if(translation != null){
+                moveShadowBack();
+                    this.movingPiece.rotateLeftY();
+                    this.movingPiece.move(translation);
+                    this.shadowPiece.rotateLeftY();
+                    this.shadowPiece.move(translation);
+                moveShadowDown();
+            }
         }
     }
     
     public void rotateLeftZ(){
-        if(collide(this.movingPiece.getRotatedPosition(0, 0, -90))){
+        ArrayList<Vector> rotated = this.movingPiece.getRotatedPosition(0, 0, -90);
+        if(collide(rotated)){
             moveShadowBack();
             this.movingPiece.rotateLeftZ();
             this.shadowPiece.rotateLeftZ();
             moveShadowDown();
         }
         else{
-            //wallkicks
+            Vector translation = wallkicks(rotated);
+            System.out.println("translation = " + translation);
+            if(translation != null){
+                moveShadowBack();
+                    this.movingPiece.rotateLeftZ();
+                    this.movingPiece.move(translation);
+                    this.shadowPiece.rotateLeftZ();
+                    this.shadowPiece.move(translation);
+                moveShadowDown();
+            }
         }
     }
     

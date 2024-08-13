@@ -12,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 
 /**
@@ -22,14 +23,14 @@ public class Menu{
     private JButton start;
     private JButton scoreBoard;
     private JButton exit;
+    ImageIcon icon = new ImageIcon("C:\\Users\\alexc\\Tetris-3D\\src\\game\\icons\\boton-de-inicio (1).png");
     public Menu(Window window, TetrisGame tg){
         window.setLayout(null);
         
-        start = new JButton("START");
-        start.setFont(new Font ("Courier New", Font.BOLD, 25) );
-        start.setBackground(Color.CYAN);
+        start = new JButton("START");        
         start.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
         start.setBounds(300, 200, 200, 50);
+        start.setIcon(icon);
         
         scoreBoard = new JButton("SCOREBOARD");
         scoreBoard.setFont(new Font ("Courier New", Font.BOLD, 25) );

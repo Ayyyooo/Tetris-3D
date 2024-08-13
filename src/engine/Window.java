@@ -34,7 +34,7 @@ public class Window extends JPanel{
         jframe.add(this);
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.setVisible(true);
-        menuMusic.reproduceMenuAudio("C:\\Users\\alexc\\Tetris-3D\\src\\game\\music\\Tetris-3D.wav");
+        menuMusic.reproduceMenuAudio("src/game/music/Tetris-3D.wav");
         
         this.controls = controls;
     }

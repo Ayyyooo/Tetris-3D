@@ -19,8 +19,6 @@ public class Piece {
     public final ArrayList<Vector> positions;
     public final Tetrominoes type;
     private Color color;
-    private int rotationStateY;
-    private int rotationStateZ;
     public Vector position;
     private final boolean isTransparent;
     
@@ -160,20 +158,6 @@ public class Piece {
         return this.color;
     }
     
-        /**
-     * @return the rotationStateY
-     */
-    public int getRotationStateY() {
-        return rotationStateY;
-    }
-
-    /**
-     * @return the rotationStateZ
-     */
-    public int getRotationStateZ() {
-        return rotationStateZ;
-    }
-    
     /*
      Rotation Methods
     */
@@ -244,38 +228,19 @@ public class Piece {
     
     public void rotateRightY(){
         rotate(0,90,0);
-        this.rotationStateY = (this.rotationStateY==270)? 0 :this.rotationStateY+90;
-        
     }
     
     public void rotateRightZ(){
         rotate(0,0,90);
-        this.rotationStateZ = (this.rotationStateZ==270)? 0 :this.rotationStateZ+90;
     }
     
     public void rotateLeftY(){
         rotate(0,-90,0);
-        this.rotationStateY = (this.rotationStateY==0)? 270 :this.rotationStateY-90;
         
     }
     
     public void rotateLeftZ(){
         rotate(0,0,-90);
-        this.rotationStateZ = (this.rotationStateZ==0)? 270 :this.rotationStateZ-90;
-    }
-    
-    //applies movement to blocks
-    private void move(float x, float y, float z){
-        this.position.setZ(this.position.getZ()+z);
-        this.position.setY(this.position.getY()+y);
-        this.position.setX(this.position.getX()+x);
-        float [][] transMatrix = Engine.translationMatrix(x,y,z);
-         for(int i =0; i<this.blocks.size();i++){
-            this.blocks.get(i).applyProjection(transMatrix);
-            this.positions.get(i).setX(x+this.positions.get(i).getX());
-            this.positions.get(i).setY(y+this.positions.get(i).getY());
-            this.positions.get(i).setZ(z+this.positions.get(i).getZ());  
-        }
     }
     
     public void move(Vector vect){
@@ -291,7 +256,7 @@ public class Piece {
         }
     }
     
-    //gets a copy of position but rotated in one axis
+    //returns a copy of positions but rotated in one axis
     public ArrayList<Vector> getRotatedPosition(float AngleX, float AngleY, float AngleZ){
         ArrayList<Vector> copyPosition = new ArrayList<>(); 
         for(Vector v: this.positions){
@@ -313,9 +278,25 @@ public class Piece {
         return copyPosition;
     }
     
+    //returns a copy of postions but translated to another position
     public ArrayList<Vector> getMovedPosition(Vector vector){
         ArrayList<Vector> copyPosition = new ArrayList<>(); 
         for(Vector v: this.positions){
+            copyPosition.add(new Vector(v.getX(),v.getY(), v.getZ()));
+        }
+        
+        for(Vector v: copyPosition){
+            v.setX(vector.getX()+v.getX());
+            v.setY(vector.getY()+v.getY());
+            v.setZ(vector.getZ()+v.getZ());  
+        }
+        
+        return copyPosition;
+    }
+    
+    public static ArrayList<Vector> getMovedPosition(Vector vector,ArrayList<Vector> positions){
+        ArrayList<Vector> copyPosition = new ArrayList<>(); 
+        for(Vector v: positions){
             copyPosition.add(new Vector(v.getX(),v.getY(), v.getZ()));
         }
         
