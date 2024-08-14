@@ -20,19 +20,17 @@ public class Soundtracks {
     
        private Clip clip;
        public void reproduceMenuAudio(String rutaArchivo) {
-//        try {
-//            // Abrir el archivo de audio como un stream de entrada
-//            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(rutaArchivo));
-//
-//            // Obtener un clip de sonido
-//            clip = AudioSystem.getClip();
-//
-//            // Abrir el clip con el stream de audio
-//            clip.open(audioStream);
-//            clip.loop(Clip.LOOP_CONTINUOUSLY);
-//            clip.start();
-//        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-//            e.printStackTrace();
-//        }
+        try {            
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(rutaArchivo));
+
+            clip = AudioSystem.getClip();
+
+            clip.open(audioStream);
+            clip.loop(Clip.LOOP_CONTINUOUSLY);
+            clip.start();
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
+
     }
 }
