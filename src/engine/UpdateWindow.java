@@ -60,23 +60,35 @@ public class UpdateWindow implements Runnable{
     
     private ArrayList<Mesh> projectScene(){
     ArrayList<Mesh> projected = new ArrayList<>();
-    Light light = new Light(new Vector(-1,0,-1), 0.3f);
+    Light light = new Light( Vector.vectorSub(new Vector(), engine.lookVec), 0.3f);
         for(ArrayList<Mesh> gameObj: scene){
             for(Mesh element: gameObj){
                 Mesh projectedScene = new Mesh();
                 projectedScene.copy(element);
                 
-                if(this.tetrisG.lastBoardAngle<this.tetrisG.boardAngle){
+                if(this.tetrisG.lastBoardAngleY<this.tetrisG.boardAngleY){
                     //rotation 
-                    projectedScene.applyTrans(Engine.rotationMatrix(0, this.tetrisG.lastBoardAngle,0));
-                    this.tetrisG.lastBoardAngle +=2;
+                    projectedScene.applyTrans(Engine.rotationMatrix(0, this.tetrisG.lastBoardAngleY,0));
+                    this.tetrisG.lastBoardAngleY +=1.5f;
                 }
-                else if(this.tetrisG.lastBoardAngle>this.tetrisG.boardAngle){
+                else if(this.tetrisG.lastBoardAngleY>this.tetrisG.boardAngleY){
                     //rotation 
-                    projectedScene.applyTrans(Engine.rotationMatrix(0, this.tetrisG.lastBoardAngle,0));
-                    this.tetrisG.lastBoardAngle -=2;
+                    projectedScene.applyTrans(Engine.rotationMatrix(0, this.tetrisG.lastBoardAngleY,0));
+                    this.tetrisG.lastBoardAngleY -=1.5f;
                 }else{
-                    projectedScene.applyTrans(Engine.rotationMatrix(0, this.tetrisG.boardAngle,0));
+                    projectedScene.applyTrans(Engine.rotationMatrix(0, this.tetrisG.boardAngleY,0));
+                }
+                if(this.tetrisG.lastBoardAngleX<this.tetrisG.boardAngleX){
+                    //rotation 
+                    projectedScene.applyTrans(Engine.rotationMatrix(this.tetrisG.lastBoardAngleX,0,0));
+                    this.tetrisG.lastBoardAngleX +=1.5f;
+                }
+                else if(this.tetrisG.lastBoardAngleX>this.tetrisG.boardAngleX){
+                    //rotation 
+                    projectedScene.applyTrans(Engine.rotationMatrix( this.tetrisG.lastBoardAngleX,0,0));
+                    this.tetrisG.lastBoardAngleX -=1.5f;
+                }else{
+                    projectedScene.applyTrans(Engine.rotationMatrix( this.tetrisG.boardAngleX,0,0));
                 }
                 
                 //camera matrix
@@ -103,7 +115,7 @@ public class UpdateWindow implements Runnable{
     
     private ArrayList<Mesh> projectScreen(){
         screenG.updateScreen();
-        Light light = new Light(engine.cameraVec, 0.3f);
+        Light light = new Light(new Vector(0,0,-1), 0.3f);
         ArrayList<Mesh> projected = new ArrayList<>();
             for(ArrayList<Mesh> screenObj: screenElements){
                 if(screenObj == null) continue;
@@ -117,7 +129,7 @@ public class UpdateWindow implements Runnable{
                         engine.cullBackFaces(projectedScreen);
 
                         //clipps triangles in scene
-                        engine.clipTrianglesAgainstPlane(projectedScreen);
+                        //engine.clipTrianglesAgainstPlane(projectedScreen);
 
                         
                         Light.applyLLighting(projectedScreen, light);
@@ -131,6 +143,4 @@ public class UpdateWindow implements Runnable{
         }
         return projected;
     }
-    
-    
 }

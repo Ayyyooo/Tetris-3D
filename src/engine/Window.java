@@ -35,7 +35,6 @@ public class Window extends JPanel{
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.setVisible(true);
         menuMusic.reproduceMenuAudio("src/game/music/Tetris-3D.wav");
-        
         this.controls = controls;
     }
     
@@ -55,12 +54,8 @@ public class Window extends JPanel{
     public void activateControls(boolean activate){
         if (activate) {
             addKeyListener(controls);
-            addMouseMotionListener(controls);
-            addMouseListener(controls);
         } else {
             removeKeyListener(controls);
-            removeMouseMotionListener(controls);
-            removeMouseListener(controls);
         }
     }
     

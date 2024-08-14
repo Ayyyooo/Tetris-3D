@@ -50,14 +50,18 @@ public class TetrisGame {
     private final ArrayList<ArrayList<Mesh>> scene;
     public final LinkedList<Tetrominoes> next;
     public Tetrominoes saved;
-    private ScreenGame sgame;
+    private final ScreenGame sgame;
     private int score;
-    private String playerName;
-    public float boardAngle;
-    public float lastBoardAngle;
-    private HashMap<Float, Vector[]> movements;
+    public float boardAngleY;
+    public float lastBoardAngleY;
+    public float boardAngleX;
+    public float lastBoardAngleX;
+    private final HashMap<Float,Vector[]> movements;
     private final Random random;
     private final Vector[] wallkicks;
+    private boolean held;
+    private String playerName;
+
 
     public TetrisGame(ArrayList<ArrayList<Mesh>> scene, ScreenGame sgame) {
         this.level = 0;
@@ -66,15 +70,18 @@ public class TetrisGame {
         this.next = new LinkedList<>();
         this.saved = null;
         this.sgame = sgame;
-        this.boardAngle = 0;
-        this.lastBoardAngle = 0;
+        this.boardAngleY =0;
+        this.lastBoardAngleY =0;
+        this.boardAngleX =0;
+        this.lastBoardAngleX =0;
         this.random = new Random();
         this.movements = new HashMap<>();
-        this.movements.put(0f, new Vector[]{new Vector(0, 0, 1), new Vector(0, 0, -1), new Vector(-1, 0, 0), new Vector(1, 0, 0)});//forward, backward,left,right
-        this.movements.put(90f, new Vector[]{new Vector(-1, 0, 0), new Vector(1, 0, 0), new Vector(0, 0, -1), new Vector(0, 0, 1)});
-        this.movements.put(180f, new Vector[]{new Vector(0, 0, -1), new Vector(0, 0, 1), new Vector(1, 0, 0), new Vector(-1, 0, 0)});
-        this.movements.put(270f, new Vector[]{new Vector(1, 0, 0), new Vector(-1, 0, 0), new Vector(0, 0, 1), new Vector(0, 0, -1)});
-        this.wallkicks = new Vector[]{new Vector(1, 0, 0), new Vector(-1, 0, 0), new Vector(0, 0, 1), new Vector(0, 0, -1), new Vector(1, 0, 1), new Vector(-1, 0, -1), new Vector(1, -1, 0), new Vector(-1, -1, 0), new Vector(0, -1, 1), new Vector(0, -1, -1), new Vector(1, -1, 1), new Vector(-1, -1, -1), new Vector(0, 2, 0), new Vector(1, 2, 0), new Vector(-1, 2, 0), new Vector(0, 2, 1), new Vector(0, 2, -1), new Vector(1, 2, 1), new Vector(-1, 2, -1)};
+        this.movements.put(0f, new Vector[]{new Vector(0,0,1),new Vector(0,0,-1),new Vector(-1,0,0),new Vector(1,0,0)});//forward, backward,left,right
+        this.movements.put(90f, new Vector[]{new Vector(-1,0,0),new Vector(1,0,0),new Vector(0,0,-1),new Vector(0,0,1)});
+        this.movements.put(180f, new Vector[]{new Vector(0,0,-1),new Vector(0,0,1),new Vector(1,0,0),new Vector(-1,0,0)});
+        this.movements.put(270f, new Vector[]{new Vector(1,0,0),new Vector(-1,0,0),new Vector(0,0,1),new Vector(0,0,-1)});
+        this.wallkicks = new Vector []{new Vector(1, 0, 0), new Vector(-1, 0, 0), new Vector(0, 0, 1), new Vector(0, 0, -1), new Vector(1, 0, 1), new Vector(-1, 0, -1), new Vector(1, -1, 0), new Vector(-1, -1, 0), new Vector(0, -1, 1), new Vector(0, -1, -1), new Vector(1, -1, 1), new Vector(-1, -1, -1), new Vector(0, 2, 0), new Vector(1, 2, 0), new Vector(-1, 2, 0), new Vector(0, 2, 1), new Vector(0, 2, -1), new Vector(1, 2, 1), new Vector(-1, 2, -1)};
+        this.held= false;
         sgame.setTetrisGame(this);
         startGame();
         this.timer = new Timer(delay, (ActionEvent e) -> {
@@ -111,8 +118,8 @@ public class TetrisGame {
     }
 
     private void endGame() {
+        this.timer.stop();
         registerScore();
-
     }
 
 
@@ -187,6 +194,7 @@ public class TetrisGame {
         this.scene.set(0, movingPiece.blocks); //index 0 moving piece
         this.scene.set(1, shadowPiece.blocks); //index 1 shadow piece
         this.sgame.updatePieces();
+        this.sgame.rotatingNext();
     }
 
     private void generateNewPiece(Tetrominoes type) {
@@ -233,7 +241,7 @@ public class TetrisGame {
             int z = ((int) Math.floor(block.getZ())) + 3;
             if (y > 14) {
                 endGame();
-
+                return;
             }
             minY = Math.min(y, minY);
             maxY = Math.max(y, maxY);
@@ -242,6 +250,7 @@ public class TetrisGame {
         checkCompleteLines(minY, maxY);
         updateScene();
         generateNewPiece();
+        this.held = false;
     }
 
     //checks the affected planes and clears if the plane is completed
@@ -252,18 +261,18 @@ public class TetrisGame {
                 break;
             }
         }
-    }
 
-    private void Scoring(int clearedLines) {
-        switch (clearedLines) {
-            case 1 ->
-                score += 227;
-            case 2 ->
-                score += 756;
-            case 3 ->
-                score += 1000;
+    }    
+    private void Scoring(int clearedLines){
+        this.sgame.rotatingScore();
+        switch (clearedLines){
+            case 1 -> score += 220;
+            case 2 -> score += 550;
+            case 3 -> score += 1000;
+
         }
     }
+
 
     private int clearLines(int y) {
         int clearedLines = 1;
@@ -398,16 +407,26 @@ public class TetrisGame {
     }
 
     //rotates the board
-    public void rotateBoard(float angle) {
-        this.boardAngle += angle;
-        if (this.boardAngle > 270) {
-            this.boardAngle = 0;
-            this.lastBoardAngle = -90;
-        }
 
-        if (this.boardAngle < 0) {
-            this.boardAngle = 270;
-            this.lastBoardAngle = 360;
+    public void rotateBoard(float yAngle, boolean xRotation){
+        this.boardAngleY +=yAngle;
+        if(this.boardAngleY >270){
+            this.boardAngleY = 0;
+            this.lastBoardAngleY = -90;
+        }
+        
+        if(this.boardAngleY <0){ 
+            this.boardAngleY = 270;
+            this.lastBoardAngleY = 360;
+        }
+        if(xRotation){
+            if(this.boardAngleX == -90){
+                this.boardAngleX = 0;
+                this.lastBoardAngleX = -90;
+            }else{
+                this.boardAngleX = -90;
+                this.lastBoardAngleX = 0;
+            }
         }
     }
 
@@ -435,7 +454,6 @@ public class TetrisGame {
             moveShadowDown();
         } else {
             Vector translation = wallkicks(rotated);
-            System.out.println("translation = " + translation);
             if (translation != null) {
                 moveShadowBack();
                 this.movingPiece.rotateRightY();
@@ -456,7 +474,6 @@ public class TetrisGame {
             moveShadowDown();
         } else {
             Vector translation = wallkicks(rotated);
-            System.out.println("translation = " + translation);
             if (translation != null) {
                 moveShadowBack();
                 this.movingPiece.rotateRightZ();
@@ -477,7 +494,6 @@ public class TetrisGame {
             moveShadowDown();
         } else {
             Vector translation = wallkicks(rotated);
-            System.out.println("translation = " + translation);
             if (translation != null) {
                 moveShadowBack();
                 this.movingPiece.rotateLeftY();
@@ -498,7 +514,6 @@ public class TetrisGame {
             moveShadowDown();
         } else {
             Vector translation = wallkicks(rotated);
-            System.out.println("translation = " + translation);
             if (translation != null) {
                 moveShadowBack();
                 this.movingPiece.rotateLeftZ();
@@ -509,39 +524,39 @@ public class TetrisGame {
             }
         }
     }
-
-    public void moveLeft() {
-        if (collide(this.movingPiece.getMovedPosition(this.movements.get(this.boardAngle)[2]))) {
+    
+    public void moveLeft(){
+        if(collide(this.movingPiece.getMovedPosition(this.movements.get(this.boardAngleY)[2]))){
             moveShadowBack();
-            this.movingPiece.move(this.movements.get(this.boardAngle)[2]);
-            this.shadowPiece.move(this.movements.get(this.boardAngle)[2]);
+            this.movingPiece.move(this.movements.get(this.boardAngleY)[2]);
+            this.shadowPiece.move(this.movements.get(this.boardAngleY)[2]);
             moveShadowDown();
         }
     }
 
-    public void moveRight() {
-        if (collide(this.movingPiece.getMovedPosition(this.movements.get(this.boardAngle)[3]))) {
+    public void moveRight(){
+        if(collide(this.movingPiece.getMovedPosition(this.movements.get(this.boardAngleY)[3]))){
             moveShadowBack();
-            this.movingPiece.move(this.movements.get(this.boardAngle)[3]);
-            this.shadowPiece.move(this.movements.get(this.boardAngle)[3]);
+            this.movingPiece.move(this.movements.get(this.boardAngleY)[3]);
+            this.shadowPiece.move(this.movements.get(this.boardAngleY)[3]);
             moveShadowDown();
         }
     }
-
-    public void moveForward() {
-        if (collide(this.movingPiece.getMovedPosition(this.movements.get(this.boardAngle)[0]))) {
+    
+    public void moveForward(){
+        if(collide(this.movingPiece.getMovedPosition(this.movements.get(this.boardAngleY)[0]))){
             moveShadowBack();
-            this.movingPiece.move(this.movements.get(this.boardAngle)[0]);
-            this.shadowPiece.move(this.movements.get(this.boardAngle)[0]);
+            this.movingPiece.move(this.movements.get(this.boardAngleY)[0]);
+            this.shadowPiece.move(this.movements.get(this.boardAngleY)[0]);
             moveShadowDown();
         }
     }
-
-    public void moveBackward() {
-        if (collide(this.movingPiece.getMovedPosition(this.movements.get(this.boardAngle)[1]))) {
+      
+    public void moveBackward(){
+        if(collide(this.movingPiece.getMovedPosition(this.movements.get(this.boardAngleY)[1]))){
             moveShadowBack();
-            this.movingPiece.move(this.movements.get(this.boardAngle)[1]);
-            this.shadowPiece.move(this.movements.get(this.boardAngle)[1]);
+            this.movingPiece.move(this.movements.get(this.boardAngleY)[1]);
+            this.shadowPiece.move(this.movements.get(this.boardAngleY)[1]);
             moveShadowDown();
         }
     }
@@ -579,8 +594,9 @@ public class TetrisGame {
     }
 
     //hold piece
-    public void holdPiece() {
-        if (this.saved == null) {
+    public void holdPiece(){
+        if(this.held)return;
+        if(this.saved == null){
             this.saved = this.movingPiece.type;
             generateNewPiece();
         } else {
@@ -588,7 +604,8 @@ public class TetrisGame {
             generateNewPiece(this.saved);
             this.saved = temp;
         }
+        this.sgame.rotatingHold();
         this.sgame.updatePieces();
+        this.held = true;
     }
-
 }
