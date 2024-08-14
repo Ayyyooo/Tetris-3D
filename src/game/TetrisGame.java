@@ -124,7 +124,7 @@ public class TetrisGame {
 
         JLabel label = new JLabel("Enter your name:");
         JTextField textField = new JTextField(20);
-        JButton button = new JButton("Submit");
+        JButton button = new JButton("Save score");
 
         scoreFrame.add(label);
         scoreFrame.add(textField);
