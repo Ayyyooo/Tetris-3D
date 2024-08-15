@@ -74,7 +74,7 @@ public class Menu {
         scoreBoard.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Board");
+                TopScores topScores = new TopScores();
             }
         });
 
