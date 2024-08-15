@@ -31,6 +31,7 @@ public class TetrisGame {
     public Piece shadowPiece;
     private int delay;
     private int level;
+    private int totalLines;
     private final Color[][][] stack;
     private final ArrayList<ArrayList<Mesh>> scene;
     public final LinkedList<Tetrominoes> next;
@@ -49,6 +50,7 @@ public class TetrisGame {
 
     public TetrisGame(ArrayList<ArrayList<Mesh>> scene, ScreenGame sgame) {
         this.level = 0;
+        this.totalLines = 0;
         this.stack = new Color[15][6][6]; //y,x,z
         this.scene = scene;
         this.next = new LinkedList<>();
@@ -141,6 +143,10 @@ public class TetrisGame {
         int decrement = 80;  // milliseconds decrement per level
         delay = Math.max(baseDelay - (level - 1) * decrement, 80); // Minimum delay of 80ms
     }
+    
+    private void updateLevel(){
+        this.level = this.totalLines/5;
+    }
 
     //returns false it the piece collides with another piece or with the walls
     private boolean collide(ArrayList<Vector> position) {
@@ -196,6 +202,11 @@ public class TetrisGame {
     }    
     private void Scoring(int clearedLines){
         this.sgame.rotatingScore();
+        this.totalLines += clearedLines;
+        updateLevel();
+        calculateDelay();
+        System.out.println("this.level = " + this.level);
+        System.out.println("this.delay = " + this.delay);
         switch (clearedLines){
             case 1 -> score += 227;
             case 2 -> score += 856;
