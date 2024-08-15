@@ -6,10 +6,6 @@ package engine;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.HashSet;
-import java.util.Set;
-import game.Menu;
-
 /**
  *
  * @author josja
@@ -22,9 +18,8 @@ import game.Menu;
 public class Window extends JPanel{
     public JFrame jframe;
     private BufferedImage frame;
-    private final Set<Integer> pressedKeys = new HashSet<>();
     Controls controls;
-    Soundtracks menuMusic = new Soundtracks();
+    
     
     public Window(Controls controls){
         setFocusable(true);
@@ -34,7 +29,7 @@ public class Window extends JPanel{
         jframe.add(this);
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.setVisible(true);
-        menuMusic.reproduceMenuAudio("src/game/music/Tetris-3D.wav");
+        
         this.controls = controls;
     }
     

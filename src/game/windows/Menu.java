@@ -2,9 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package game;
+package game.windows;
 
 import engine.Window;
+import game.TetrisGame;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -23,7 +24,7 @@ public class Menu{
     private JButton start;
     private JButton scoreBoard;
     private JButton exit;
-    ImageIcon icon = new ImageIcon("C:\\Users\\alexc\\Tetris-3D\\src\\game\\icons\\boton-de-inicio (1).png");
+    ImageIcon icon = new ImageIcon("game/icons/boton-de-inicio (1).png");
     public Menu(Window window, TetrisGame tg){
         window.setLayout(null);
         

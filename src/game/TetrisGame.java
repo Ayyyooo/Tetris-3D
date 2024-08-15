@@ -51,7 +51,7 @@ public class TetrisGame {
     public final LinkedList<Tetrominoes> next;
     public Tetrominoes saved;
     private final ScreenGame sgame;
-    private int score;
+    public int score;
     public float boardAngleY;
     public float lastBoardAngleY;
     public float boardAngleX;
