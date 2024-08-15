@@ -16,7 +16,7 @@ public class Light {
     public float intensity;
 
     public Light(Vector position, float intensity) {
-        this.position = position;
+        this.position = Vector.vectorUnit(position);
         this.intensity = intensity;
     }
     
@@ -30,7 +30,7 @@ public class Light {
     
     public static Color calculateLighting(Vector normal, Light light, Color color) {
         
-        float diff = Vector.vectorDotP(normal, light.position);
+        float diff = Vector.vectorDotP(Vector.vectorUnit(normal), light.position);
         
         Color diffuse = multiplyColor(color, -diff, light.intensity);
         

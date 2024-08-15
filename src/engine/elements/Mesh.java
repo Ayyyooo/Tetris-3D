@@ -52,7 +52,6 @@ public class Mesh {
         }
     }
     
-    
     public void applyProjection(float [][] matrix){
         Iterator<Triangle> iterator = this.m.iterator();
         while(iterator.hasNext()){
