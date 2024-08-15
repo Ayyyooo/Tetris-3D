@@ -4,8 +4,10 @@
  */
 package game;
 
+import game.windows.Menu;
 import engine.Controls;
 import engine.Engine;
+import engine.Soundtracks;
 import engine.UpdateWindow;
 import engine.Window;
 import engine.elements.Mesh;
@@ -35,7 +37,9 @@ public class GameStart {
        Window window = new Window(controls);
        //menu
        Menu menu = new Menu(window, tgame);
-
+       
+       Soundtracks menuMusic = new Soundtracks();
+       menuMusic.reproduceMenuAudio("src/game/music/Tetris-3D.wav");
        //initializes and starts the window update
        UpdateWindow update = new UpdateWindow(p,window,scene,screen,screenGame,tgame);
        Thread updateThread = new Thread(update);

@@ -8,7 +8,11 @@ import engine.elements.Mesh;
 import engine.elements.Vector;
 import game.ScreenGame;
 import game.TetrisGame;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.util.ArrayList;
+import javax.swing.JLabel;
 /**
  *
  * @author josja
@@ -21,6 +25,7 @@ public class UpdateWindow implements Runnable{
     private int w,h; 
     private final ScreenGame screenG;
     private final TetrisGame tetrisG;
+    JLabel score;
     public UpdateWindow(Engine engine, Window window, ArrayList<ArrayList<Mesh>> scene, ArrayList<ArrayList<Mesh>> screenElements, ScreenGame screenG, TetrisGame tetrisG){
         this.engine = engine;
         this.window = window;
@@ -30,6 +35,7 @@ public class UpdateWindow implements Runnable{
         this.screenElements = screenElements;
         this.screenG = screenG;
         this.tetrisG = tetrisG;
+        this.setScore();
     }
     @Override
     public void run(){
@@ -49,7 +55,7 @@ public class UpdateWindow implements Runnable{
             //render screen
             render.renderFrame(projectedScreen);
             this.window.update(render.getFrame());
-
+            updateScore();
             try {
                 Thread.sleep(16);  // Control animation speed
             } catch (InterruptedException e) {
@@ -143,4 +149,35 @@ public class UpdateWindow implements Runnable{
         }
         return projected;
     }
+    
+    private void setScore(){
+        score = new JLabel(String.valueOf(this.tetrisG.score));
+        score.setForeground(Color.WHITE);
+        score.setFont(new Font("Arial", Font.BOLD, 30));
+        this.window.setLayout(null);
+        this.window.add(score);
+    }
+    private void updateScore(){
+        Vector position = new Vector(-4.2f, 2.5f, 15);
+        Engine.matrixMultiInPlace(this.engine.projMatrix, position);
+
+        // Set the text for the score label
+        score.setText(String.valueOf(this.tetrisG.score));
+
+        // Get the preferred size of the label based on its content
+        Dimension labelSize = score.getPreferredSize();
+
+        // Calculate screen position
+        int screenX = (int)((position.getX() * (0.5f * (float)this.w)) + (this.w / 2));
+        int screenY = (int)((1 - position.getY()) * (0.5f * (float)this.h));
+
+        // Center the label on the calculated position
+        int centeredX = screenX - (labelSize.width / 2);
+        int centeredY = screenY - (labelSize.height / 2);
+
+        // Set the bounds of the label based on its content size
+        score.setBounds(centeredX, centeredY, labelSize.width, labelSize.height);
+    } 
+    
+    
 }
