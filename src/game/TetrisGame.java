@@ -205,11 +205,9 @@ public class TetrisGame {
         this.totalLines += clearedLines;
         updateLevel();
         calculateDelay();
-        System.out.println("this.level = " + this.level);
-        System.out.println("this.delay = " + this.delay);
         switch (clearedLines){
-            case 1 -> score += 227;
-            case 2 -> score += 856;
+            case 1 -> score += 200;
+            case 2 -> score += 500;
             case 3 -> score += 1000;
 
         }
