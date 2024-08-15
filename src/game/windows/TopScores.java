@@ -51,7 +51,14 @@ public class TopScores extends javax.swing.JFrame {
         JLabel[][] jLabels = new JLabel[2][5];
         jPanel1.setLayout(new GridLayout(5, 2));
            for(int i =0; i<5;i++){
-               String[] rows = this.lines[i].split(":");
+               String[] rows;
+               if(this.lines[i] != null){ 
+                    rows = this.lines[i].split(":");
+               }else{
+                    rows = new String[2];
+                    rows[0] = " ";
+                    rows[1] = " ";
+               }
                jLabels[0][i] = new JLabel();
                jLabels[1][i] = new JLabel();
                jLabels[0][i].setText(rows[0]);

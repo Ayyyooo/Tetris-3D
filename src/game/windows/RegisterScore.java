@@ -3,8 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package game.windows;
-
-import game.GameStart;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
