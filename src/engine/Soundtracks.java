@@ -20,17 +20,17 @@ public class Soundtracks {
     
        private Clip clip;
        public void reproduceMenuAudio(String rutaArchivo) {
-        try {            
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(rutaArchivo));
-
-            clip = AudioSystem.getClip();
-
-            clip.open(audioStream);
-            clip.loop(Clip.LOOP_CONTINUOUSLY);
-            clip.start();
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-            e.printStackTrace();
-        }
+//        try {            
+//            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(rutaArchivo));
+//
+//            clip = AudioSystem.getClip();
+//
+//            clip.open(audioStream);
+//            clip.loop(Clip.LOOP_CONTINUOUSLY);
+//            clip.start();
+//        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+//            e.printStackTrace();
+//        }
 
     }
 }

@@ -38,6 +38,9 @@ public class GameStart {
        //menu
        Menu menu = new Menu(window, tgame);
        
+       controls.setMenu(menu);
+       tgame.setWindow(window);
+       
        Soundtracks menuMusic = new Soundtracks();
        menuMusic.reproduceMenuAudio("src/game/music/Tetris-3D.wav");
        //initializes and starts the window update

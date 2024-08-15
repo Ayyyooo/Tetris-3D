@@ -2,9 +2,8 @@ package engine;
 import engine.elements.Vector;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import game.TetrisGame;
+import game.windows.Menu;
 import java.awt.Component;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -14,15 +13,21 @@ import java.awt.event.ComponentListener;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 
-public class Controls implements KeyListener{
+public class Controls implements KeyListener, ComponentListener{
     TetrisGame game;
     Vector cameraVec;
     Vector lookVec;
+    Menu menu;
     
     public Controls(TetrisGame tg, int width,int height,Vector cameraVec, Vector lookVec){
         game = tg;
         this.cameraVec = cameraVec;
         this.lookVec = lookVec;
+        
+    }
+    
+    public void setMenu(Menu menu){
+        this.menu = menu;
     }
     
     @Override
@@ -53,7 +58,7 @@ public class Controls implements KeyListener{
                 game.hardDrop();
             case KeyEvent.VK_V -> //(V) soft drop
                 game.softDrop();
-            case KeyEvent.VK_SHIFT -> //(V) soft drop
+            case KeyEvent.VK_SHIFT -> //(Shift) hold piece
                 game.holdPiece();
             case KeyEvent.VK_Q -> //(Q) clockwise rotation view 90 degrees 
                 game.rotateBoard(-90,false);
@@ -81,6 +86,9 @@ public class Controls implements KeyListener{
                      Engine.matrixMultiInPlace(Engine.rotationMatrix(37f, 22, 0), lookVec);
                 }
             }
+           case KeyEvent.VK_ESCAPE ->{ //game pause
+               menu.displayMenu();
+           }
         }
                 
     }
@@ -90,7 +98,23 @@ public class Controls implements KeyListener{
 
     }
 
-  
-    
+    @Override
+    public void componentResized(ComponentEvent e) {
+        menu.displayMenu();
+    }
 
+    @Override
+    public void componentMoved(ComponentEvent e) {
+        menu.displayMenu();
+    }
+
+    @Override
+    public void componentShown(ComponentEvent e) {
+        
+    }
+
+    @Override
+    public void componentHidden(ComponentEvent e) {
+        menu.displayMenu();
+    }
 }

@@ -29,7 +29,6 @@ public class Window extends JPanel{
         jframe.add(this);
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jframe.setVisible(true);
-        
         this.controls = controls;
     }
     
@@ -49,8 +48,10 @@ public class Window extends JPanel{
     public void activateControls(boolean activate){
         if (activate) {
             addKeyListener(controls);
+            this.jframe.addComponentListener(controls);
         } else {
             removeKeyListener(controls);
+            this.jframe.removeComponentListener(controls);
         }
     }
     

@@ -25,8 +25,21 @@ public class Menu {
     private JButton start;
     private JButton scoreBoard;
     private JButton exit;
-
+    private Window window;
+    private TetrisGame tg;
+    private boolean displayed;
+    
     public Menu(Window window, TetrisGame tg) {
+        this.window = window;
+        this.tg = tg;
+        this.displayed = false;
+        displayMenu();
+    }
+    
+    public void displayMenu(){
+        if(displayed)return;
+        if(tg.timer.isRunning())tg.timer.stop();
+        window.activateControls(false);
         window.setLayout(null);
         ImageIcon startIcon = new ImageIcon("src\\game\\icons\\startButton.png");
         start = new JButton(startIcon);
@@ -54,6 +67,7 @@ public class Menu {
                 start.setVisible(false);
                 scoreBoard.setVisible(false);
                 exit.setVisible(false);
+                displayed = false;
             }
         });
 
@@ -83,7 +97,7 @@ public class Menu {
         });
 
         positionButtons(window.getWidth(), window.getHeight());
-
+        displayed = true;
     }
 
     private void positionButtons(int windowWidth, int windowHeight) {

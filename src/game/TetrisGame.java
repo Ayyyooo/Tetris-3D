@@ -6,33 +6,18 @@ package game;
 
 import engine.Engine;
 import engine.ObjFileLoader;
+import engine.Window;
 import engine.elements.Mesh;
 import engine.elements.Triangle;
 import engine.elements.Vector;
+import game.windows.RegisterScore;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import static java.nio.file.Files.lines;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 import javax.swing.*;
 
 /**
@@ -41,7 +26,7 @@ import javax.swing.*;
  */
 public class TetrisGame {
 
-    private final Timer timer;
+    public final Timer timer;
     public Piece movingPiece;
     public Piece shadowPiece;
     private int delay;
@@ -60,8 +45,7 @@ public class TetrisGame {
     private final Random random;
     private final Vector[] wallkicks;
     private boolean held;
-    private String playerName;
-
+    private Window window;
 
     public TetrisGame(ArrayList<ArrayList<Mesh>> scene, ScreenGame sgame) {
         this.level = 0;
@@ -113,76 +97,23 @@ public class TetrisGame {
         this.sgame.createPieces();
     }
 
+    public void setWindow(Window window){
+        this.window = window;
+    }
+    
     public void startTimer() {
         this.timer.start();
     }
 
     private void endGame() {
         this.timer.stop();
+        window.activateControls(false);
         registerScore();
     }
 
 
-    public String registerScore() {
-        JFrame scoreFrame = new JFrame("Register Score");
-        scoreFrame.setSize(400, 300);
-        scoreFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        scoreFrame.setLayout(new FlowLayout());
-
-        JLabel label = new JLabel("Enter your name:");
-        JTextField textField = new JTextField(20);
-        JButton button = new JButton("Save score");
-
-        scoreFrame.add(label);
-        scoreFrame.add(textField);
-        scoreFrame.add(button);
-        scoreFrame.setVisible(true);
-
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                playerName = textField.getText();
-                String path = "scores.txt";
-                HashMap<String, Integer> Scores = new HashMap<>();
-
-                try (FileWriter writer = new FileWriter(path, true)) {
-                    writer.write(playerName + " " + score + System.lineSeparator());
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-
-                try (BufferedReader br = new BufferedReader(new FileReader(path))) {
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        String[] parts = line.split(" ");
-                        if (parts.length == 2) {
-                            String key = parts[0];
-                            int value = Integer.parseInt(parts[1]);
-                            Scores.put(key, value);
-                        }
-                    }
-                } catch (IOException exc) {
-                    exc.printStackTrace();
-                }
-
-                List<Map.Entry<String, Integer>> list = new LinkedList<>(Scores.entrySet());
-                list.sort(Map.Entry.<String, Integer>comparingByValue().reversed());
-
-                try (BufferedWriter writer = new BufferedWriter(new FileWriter(path))) {
-                    for (Map.Entry<String, Integer> entry : list) {
-                        writer.write(entry.getKey() + ": " + entry.getValue());
-                        writer.newLine();
-                    }
-                } catch (IOException excp) {
-                    excp.printStackTrace();
-                }
-
-              
-                scoreFrame.dispose();
-            }
-        });
-
-        return playerName; 
+    public void registerScore() {
+        RegisterScore register = new RegisterScore(this.score);
     }
 
 
